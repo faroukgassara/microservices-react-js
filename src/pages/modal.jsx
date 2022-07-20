@@ -67,9 +67,8 @@ const Modal = ({ open, children, onClose, application }) => {
 
     const [items, setItems] = useState([]);
 
-    useEffect(() => {
-    localStorage.setItem('items', JSON.stringify(items));
-    }, [items]);
+    const [accounts, setAccounts] = useState([]);
+
 
     const LogIn = event => {
         event.preventDefault()
@@ -79,16 +78,28 @@ const Modal = ({ open, children, onClose, application }) => {
             "application": application._id,
             "password": password
         });
-        axios.post('http://localhost:3000/users/signin',log, {
+        axios.post('http://localhost:3000/users/signin', log, {
             headers: {
                 'Content-Type': 'application/json'
             }
         })
             .then(response => {
+
+                setAccounts((prevFriends) => [
+                    ...prevFriends,
+                    {
+                        items: response.data,
+                        app: application.name,
+                    },
+                ]);
+                //console.log(accounts)
+
+                localStorage.setItem('items', JSON.stringify(accounts));
+
                 //jwt(response.data.access_token);
                 //signIn(response.data.user);
-                console.log(response);
-                setItems([...items,response.data]);
+                //console.log(response);
+                //setItems([...items,response.data]);
                 //setItems(response);
                 //const it = JSON.parse(localStorage.getItem('items'));
                 //console.log(it);
@@ -96,7 +107,7 @@ const Modal = ({ open, children, onClose, application }) => {
                 //navigate('/')
             })
             .catch(error => {
-                console.error(error)
+                //console.error(error)
                 setLoading(false)
                 swal("Unauthorized!", "Try Again!", "error");
 
@@ -136,7 +147,6 @@ const Modal = ({ open, children, onClose, application }) => {
                 })
                     .then(response => {
                         setLoading(false);
-                        console.log("hello")
                     })
                     .catch(error => {
                         setLoading(false)
@@ -156,13 +166,13 @@ const Modal = ({ open, children, onClose, application }) => {
 
     const MODAL_STYLES = {
         position: 'fixed',
-        top:'-25%',
+        top: '-25%',
         left: '50%',
         transform: 'translate(-50%,+50%)',
         backgroundColor: '#FFF',
         width: '600px',
         maxWidth: '100%',
-        height: '450px',
+        height: '600px',
         maxHeight: '100%',
         zIndex: 1000,
     }
@@ -178,6 +188,29 @@ const Modal = ({ open, children, onClose, application }) => {
         overflow: 'auto',
     }
 
+    const [previousaccounts, setPreviousaccounts] = useState();
+
+
+    useEffect(() => {
+        const items = JSON.parse(localStorage.getItem('items'));
+        setItems(items);
+        items.map((data, index) => {
+            //console.log(application)
+            if (application !== undefined) {
+                if (data.app == application.name) {
+                    setPreviousaccounts(true)
+                }
+            } else {
+                return;
+                //console.log("f")
+            }
+            console.log(previousaccounts)
+        })
+
+        //console.log(items)
+        //{previousaccounts ? 'currently' : 'not'}
+    }, [application])
+
 
 
     useEffect(() => {
@@ -186,9 +219,6 @@ const Modal = ({ open, children, onClose, application }) => {
             .then(response => {
                 setApplications(response.data)
             })
-            .catch(error => {
-                console.error(error);
-            });
 
         if (emailRegex.test(email) === false || passwordRegex.test(password) === false) {
             setDisablelogin(true);
@@ -254,6 +284,8 @@ const Modal = ({ open, children, onClose, application }) => {
         } else {
             setDisableerrorconfirmpassword(true)
         }
+
+
     });
 
     const [disablesignin, setDisablesignin] = useState(false);
@@ -273,122 +305,127 @@ const Modal = ({ open, children, onClose, application }) => {
         setDisablesignin(false);
     };
 
+
+
     return (
         <div style={OVERLAY_STYLES}>
-
             <div style={MODAL_STYLES}>
-
-                <div hidden={disablesignin}>
-                    <form>
-                        <h1>Sign in</h1>
-                        <div className="social-container"></div>
-
-                        <input type="email" name="email" className="form-control" placeholder="Enter email"
-                            value={email}
-                            onChange={(e) => { setEmail(e.target.value); setTouchedemail(true); }}
-                        />
-                        <span className="left-side" hidden={disableerroremail}>enter a valid address</span>
-
-                        <input type="password" name="password" className="form-control" placeholder="Enter password"
-                            value={password}
-                            onChange={(e) => { setPassword(e.target.value); setTouchedpassword(true); }}
-                        />
-                        <span className="left-side" hidden={disableerrorpassword}>enter a password</span>
+                {previousaccounts ? 'currently' :
+                    <div>
+                        <div hidden={disablesignin}>
 
 
-                        <div hidden={!loading} className="loader">
-                            <span></span>
-                            <span></span>
-                            <span></span>
-                            <span></span>
-                            <span></span>
-                            <span></span>
-                        </div>
-                        <a onClick={changeSignin}>Create Account?</a>
-                        <button hidden={disablelogin} onClick={LogIn}>Sign In</button>
-                    </form>
+                            <form>
+                                <h1>Sign in</h1>
+                                <div className="social-container"></div>
 
-                </div>
-                <div hidden={disablessignup}>
-                    <form>
-                        <h1>Sign up</h1>
-                        <input type="email" name="email" className="form-control" placeholder="Enter email"
-                            value={email}
-                            onChange={(e) => { setEmail(e.target.value); setTouchedemail(true); }}
-                        />
-                        <span className="left-side" hidden={disableerroremail}>enter a valid address</span>
-
-                        <div className="row">
-                            <div className="form-group col-md-6">
-                                <input type="text" name="lastname" className="form-control" placeholder="Lastname"
-                                    value={lastname}
-                                    onChange={(e) => { setLastname(e.target.value); setTouchedlastname(true) }}
+                                <input type="email" name="email" className="form-control" placeholder="Enter email"
+                                    value={email}
+                                    onChange={(e) => { setEmail(e.target.value); setTouchedemail(true); }}
                                 />
-                                <span className="left-side" hidden={disableerrorlastname}>enter a lastname</span>
-                            </div>
+                                <span className="left-side" hidden={disableerroremail}>enter a valid address</span>
 
-                            <div className="form-group col-md-6">
-                                <input type="text" name="firstname" className="form-control" placeholder="Firstname"
-                                    value={firstname}
-                                    onChange={(e) => { setFirstname(e.target.value); setTouchedfirstname(true) }}
-                                />
-                                <span className="left-side" hidden={disableerrorfirstname}>enter a firstname</span>
-                            </div>
-                        </div>
-
-                        <div className="row">
-                            <div className="form-group col-md-6">
-                                <input type="password" name="password" className="form-control" placeholder="Password"
+                                <input type="password" name="password" className="form-control" placeholder="Enter password"
                                     value={password}
-                                    onChange={(e) => { setPassword(e.target.value); setTouchedpassword(true) }}
+                                    onChange={(e) => { setPassword(e.target.value); setTouchedpassword(true); }}
                                 />
-                                <span className="left-side" hidden={disableerrorpassword}>Password does not meet the requirements</span>
-                            </div>
+                                <span className="left-side" hidden={disableerrorpassword}>enter a password</span>
 
-                            <div className="form-group col-md-6">
-                                <input type="confirmpassword" name="confirmpassword" className="form-control" placeholder="Confirm password"
-                                    value={confirmpassword}
-                                    onChange={(e) => { setConfirmpassword(e.target.value); setTouchedconfirmpassword(true) }}
-                                />
-                                <span className="left-side" hidden={disableerrorconfirmpassword}>password doesn't match </span>
-                            </div>
+
+                                <div hidden={!loading} className="loader">
+                                    <span></span>
+                                    <span></span>
+                                    <span></span>
+                                    <span></span>
+                                    <span></span>
+                                    <span></span>
+                                </div>
+                                <a onClick={changeSignin}>Create Account?</a>
+                                <button hidden={disablelogin} onClick={LogIn}>Sign In</button>
+                            </form>
+
                         </div>
-
-                        <input type="text" name="address" className="form-control" placeholder="Address"
-                            value={address}
-                            onChange={(e) => { setAddress(e.target.value); setTouchedaddress(true) }}
-                        />
-                        <span className="left-side" hidden={disableerroraddress}>enter an address</span>
-
-                        <div className="row">
-                            <div className="form-group col-md-6">
-                                <input type="number" name="cin" className="form-control" placeholder="CIN"
-                                    value={cin}
-                                    onChange={(e) => { setCin(e.target.value); setTouchedcin(true) }}
+                        <div hidden={disablessignup}>
+                            <form>
+                                <h1>Sign up</h1>
+                                <input type="email" name="email" className="form-control" placeholder="Enter email"
+                                    value={email}
+                                    onChange={(e) => { setEmail(e.target.value); setTouchedemail(true); }}
                                 />
-                                <span className="left-side" hidden={disableerrorcin}>enter a cin</span>
-                            </div>
+                                <span className="left-side" hidden={disableerroremail}>enter a valid address</span>
 
-                            <div className="form-group col-md-6">
-                                <input type="number" name="phone" className="form-control" placeholder="Phone Number"
-                                    value={phone}
-                                    onChange={(e) => { setPhone(e.target.value); setTouchedphone(true) }}
+                                <div className="row">
+                                    <div className="form-group col-md-6">
+                                        <input type="text" name="lastname" className="form-control" placeholder="Lastname"
+                                            value={lastname}
+                                            onChange={(e) => { setLastname(e.target.value); setTouchedlastname(true) }}
+                                        />
+                                        <span className="left-side" hidden={disableerrorlastname}>enter a lastname</span>
+                                    </div>
+
+                                    <div className="form-group col-md-6">
+                                        <input type="text" name="firstname" className="form-control" placeholder="Firstname"
+                                            value={firstname}
+                                            onChange={(e) => { setFirstname(e.target.value); setTouchedfirstname(true) }}
+                                        />
+                                        <span className="left-side" hidden={disableerrorfirstname}>enter a firstname</span>
+                                    </div>
+                                </div>
+
+                                <div className="row">
+                                    <div className="form-group col-md-6">
+                                        <input type="password" name="password" className="form-control" placeholder="Password"
+                                            value={password}
+                                            onChange={(e) => { setPassword(e.target.value); setTouchedpassword(true) }}
+                                        />
+                                        <span className="left-side" hidden={disableerrorpassword}>Password does not meet the requirements</span>
+                                    </div>
+
+                                    <div className="form-group col-md-6">
+                                        <input type="confirmpassword" name="confirmpassword" className="form-control" placeholder="Confirm password"
+                                            value={confirmpassword}
+                                            onChange={(e) => { setConfirmpassword(e.target.value); setTouchedconfirmpassword(true) }}
+                                        />
+                                        <span className="left-side" hidden={disableerrorconfirmpassword}>password doesn't match </span>
+                                    </div>
+                                </div>
+
+                                <input type="text" name="address" className="form-control" placeholder="Address"
+                                    value={address}
+                                    onChange={(e) => { setAddress(e.target.value); setTouchedaddress(true) }}
                                 />
-                                <span className="left-side" hidden={disableerrorphone}>enter a phone number</span>
-                            </div>
+                                <span className="left-side" hidden={disableerroraddress}>enter an address</span>
+
+                                <div className="row">
+                                    <div className="form-group col-md-6">
+                                        <input type="number" name="cin" className="form-control" placeholder="CIN"
+                                            value={cin}
+                                            onChange={(e) => { setCin(e.target.value); setTouchedcin(true) }}
+                                        />
+                                        <span className="left-side" hidden={disableerrorcin}>enter a cin</span>
+                                    </div>
+
+                                    <div className="form-group col-md-6">
+                                        <input type="number" name="phone" className="form-control" placeholder="Phone Number"
+                                            value={phone}
+                                            onChange={(e) => { setPhone(e.target.value); setTouchedphone(true) }}
+                                        />
+                                        <span className="left-side" hidden={disableerrorphone}>enter a phone number</span>
+                                    </div>
+                                </div>
+                                <div hidden={!loading} className="loader">
+                                    <span></span>
+                                    <span></span>
+                                    <span></span>
+                                    <span></span>
+                                    <span></span>
+                                    <span></span>
+                                </div>
+                                <a onClick={changeSignup}>Login With Your Account?</a>
+                                <button onClick={SignUp}>Sign Up</button>
+                            </form>
                         </div>
-                        <div hidden={!loading} className="loader">
-                            <span></span>
-                            <span></span>
-                            <span></span>
-                            <span></span>
-                            <span></span>
-                            <span></span>
-                        </div>
-                        <a onClick={changeSignup}>Login With Your Account?</a>
-                        <button onClick={SignUp}>Sign Up</button>
-                    </form>
-                </div>
+                    </div>}
             </div>
         </div>
     )
