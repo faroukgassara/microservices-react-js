@@ -65,14 +65,21 @@ const Modal = ({ open, children, onClose, application }) => {
     const [IsOpen, setIsOpen] = useState(false)
     const [users, setUsers] = useState([])
 
+    const [items, setItems] = useState([]);
+
+    useEffect(() => {
+    localStorage.setItem('items', JSON.stringify(items));
+    }, [items]);
+
     const LogIn = event => {
         event.preventDefault()
         setLoading(true)
-        axios.post('http://localhost:3000/users/signin', {
+        const log = JSON.stringify({
             "email": email,
             "application": application._id,
             "password": password
-        }, {
+        });
+        axios.post('http://localhost:3000/users/signin',log, {
             headers: {
                 'Content-Type': 'application/json'
             }
@@ -80,20 +87,20 @@ const Modal = ({ open, children, onClose, application }) => {
             .then(response => {
                 //jwt(response.data.access_token);
                 //signIn(response.data.user);
+                console.log(response);
+                setItems([...items,response.data]);
+                //setItems(response);
+                //const it = JSON.parse(localStorage.getItem('items'));
+                //console.log(it);
                 setLoading(false);
-                navigate('/')
+                //navigate('/')
             })
             .catch(error => {
+                console.error(error)
                 setLoading(false)
                 swal("Unauthorized!", "Try Again!", "error");
 
             });
-    }
-
-    const Affectation = event => {
-        event.preventDefault()
-
-
     }
 
     const SignUp = event => {
@@ -118,16 +125,10 @@ const Modal = ({ open, children, onClose, application }) => {
             }
         })
             .then(response => {
-                //setLoading(false);
-                console.log(response.data)
-                setUsers(response.data);
-
                 const aff = JSON.stringify({
                     "users": response.data._id,
                     "applications": application._id,
-
                 });
-                console.log(aff)
                 axios.post('http://localhost:3000/affectation', aff, {
                     headers: {
                         'Content-Type': 'application/json'
@@ -139,11 +140,8 @@ const Modal = ({ open, children, onClose, application }) => {
                     })
                     .catch(error => {
                         setLoading(false)
-                        if (error.response.data.statusCode == 500) {
-                            swal("USER EXISTSl!", "Try To Login or Confirm you account!", "error");
-                        } else {
-                            swal("Try Again!", "Unknown error has occurred!", "error");
-                        }
+                        swal("Try Again!", "Unknown error has occurred!", "error");
+
                     });
             })
             .catch(error => {
@@ -158,14 +156,13 @@ const Modal = ({ open, children, onClose, application }) => {
 
     const MODAL_STYLES = {
         position: 'fixed',
-        //top:'25%',
+        top:'-25%',
         left: '50%',
         transform: 'translate(-50%,+50%)',
         backgroundColor: '#FFF',
-        //padding : '50px',
         width: '600px',
         maxWidth: '100%',
-        height: '400px',
+        height: '450px',
         maxHeight: '100%',
         zIndex: 1000,
     }
@@ -265,11 +262,21 @@ const Modal = ({ open, children, onClose, application }) => {
 
     if (!open) { return null }
 
-    return (
-        <div style={OVERLA_STYLES}>
-            <button  onClick={setDisablesignin(true)}>Sign In</button>
-            <div style={MODAL_STYLES}>
+    const changeSignin = () => {
+        setDisablesignin(true);
+        setDisablessignup(false);
 
+    };
+
+    const changeSignup = () => {
+        setDisablessignup(true);
+        setDisablesignin(false);
+    };
+
+    return (
+        <div style={OVERLAY_STYLES}>
+
+            <div style={MODAL_STYLES}>
 
                 <div hidden={disablesignin}>
                     <form>
@@ -297,6 +304,7 @@ const Modal = ({ open, children, onClose, application }) => {
                             <span></span>
                             <span></span>
                         </div>
+                        <a onClick={changeSignin}>Create Account?</a>
                         <button hidden={disablelogin} onClick={LogIn}>Sign In</button>
                     </form>
 
@@ -377,6 +385,7 @@ const Modal = ({ open, children, onClose, application }) => {
                             <span></span>
                             <span></span>
                         </div>
+                        <a onClick={changeSignup}>Login With Your Account?</a>
                         <button onClick={SignUp}>Sign Up</button>
                     </form>
                 </div>
