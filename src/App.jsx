@@ -12,6 +12,7 @@ import UsersManagement from './pages/usersmanagement'
 import ProtectedRoutes from './configs/protectedRoutes'
 import { useSelector,useDispatch } from "react-redux";
 import PageNotFound from './pages/pagenotfound'
+import SignUp from './pages/Signup'
 function App() {
     const state = useSelector((state) => state);
 
@@ -19,7 +20,7 @@ function App() {
         <BrowserRouter>
             <Routes>
                 <Route path="auth" element={<SignIn />} />
-                
+                <Route path="signup" element={<SignUp />} />
                 <Route path="forgotpassword" element={<ForgotPassword /> } />
                
                 <Route path="emailconfirmation/:email/:token" element={<EmailConfirmation />} />

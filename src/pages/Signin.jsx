@@ -4,18 +4,19 @@ import logo from '../assets/images/signupp.png';
 import logoo from '../assets/images/ab.png';
 import axios from 'axios';
 import swal from 'sweetalert';
-import {Routes, Route, useNavigate} from 'react-router-dom';
-import { useSelector,useDispatch } from "react-redux";
-import {bindActionCreators} from 'redux';
-import { actionsCreators} from '../actions/index';
+import { Routes, Route, useNavigate } from 'react-router-dom';
+import { useSelector, useDispatch } from "react-redux";
+import { bindActionCreators } from 'redux';
+import { actionsCreators } from '../actions/index';
+import Modal from './modal';
 const SignIn = () => {
 
     const state = useSelector((state) => state);
-    
+
     const dispatch = useDispatch();
 
-    const {signIn,jwt,logOut} = bindActionCreators(actionsCreators,dispatch)
-    
+    const { signIn, jwt, logOut } = bindActionCreators(actionsCreators, dispatch)
+
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -38,7 +39,8 @@ const SignIn = () => {
     const [disableerrorfirstname, setDisableerrorfirstname] = React.useState(true);
     const [disableerrorlastname, setDisableerrorlastname] = React.useState(true);
     const [disableerrorconfirmpassword, setDisableerrorconfirmpassword] = React.useState(true);
-    const [loading,setLoading] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const [application, setApplication] = useState();
 
 
     const [touchedemail, setTouchedemail] = useState(false);
@@ -50,6 +52,9 @@ const SignIn = () => {
     const [touchedfirstname, setTouchedfirstname] = useState(false);
     const [touchedlastname, setTouchedlastname] = useState(false);
     const [touchedconfirmpassword, setTouchedconfirmpassword] = useState(false);
+
+    const [applications, setApplications] = useState([])
+    const [IsOpen, setIsOpen] = useState(false)
 
 
     const emailRegex = RegExp(
@@ -66,32 +71,32 @@ const SignIn = () => {
         event.preventDefault()
         setLoading(true)
         const user = JSON.stringify({
-            "email" : email,
-            "password" :password,
-            "firstname":firstname,
-            "lastname":lastname,
-            "age":15,
-            "address":address,
-            "cin":Number(cin),
-            "locked":true,
-            "enabled":true,
-            "picture":"efef",
-            "phone":Number(phone)
+            "email": email,
+            "password": password,
+            "firstname": firstname,
+            "lastname": lastname,
+            "age": 15,
+            "address": address,
+            "cin": Number(cin),
+            "locked": true,
+            "enabled": true,
+            "picture": "efef",
+            "phone": Number(phone)
         });
-        axios.post('http://localhost:3000/users/signup',user, {
+        axios.post('http://localhost:3000/users/signup', user, {
             headers: {
-              'Content-Type': 'application/json'
+                'Content-Type': 'application/json'
             }
         })
-        .then(response => {window.location.reload();setLoading(false)})
-        .catch(error => {
-            setLoading(false)
-            if(error.response.data.statusCode == 500){
-                swal("USER EXISTSl!", "Try To Login or Confirm you account!", "error");
-            }else{
-                swal("Try Again!", "Unknown error has occurred!", "error");
-            }
-        });
+            .then(response => { window.location.reload(); setLoading(false) })
+            .catch(error => {
+                setLoading(false)
+                if (error.response.data.statusCode == 500) {
+                    swal("USER EXISTSl!", "Try To Login or Confirm you account!", "error");
+                } else {
+                    swal("Try Again!", "Unknown error has occurred!", "error");
+                }
+            });
     }
 
 
@@ -99,136 +104,157 @@ const SignIn = () => {
         event.preventDefault()
         setLoading(true)
         axios.post('http://localhost:3000/login', {
-            "email" : email,
-            "password" : password
+            "email": email,
+            "password": password
         }, {
             headers: {
-              'Content-Type': 'application/json'
+                'Content-Type': 'application/json'
             }
         })
-        .then(response => {
-            jwt(response.data.access_token);
-            signIn(response.data.user);
-            setLoading(false);
-            navigate('/')
-        })
-        .catch(error => {
-            setLoading(false)
-            if(error.response.data.statusCode == 401){
-                swal("Unauthorized!", "Incorrect password!", "error");
-            }else if(error.response.data.statusCode == 500){
-                swal("Check Your Email!", "Specified account does not exist!", "error");
-            }else{
-                swal("Try Again!", "Unknown error has occurred!", "error");
-            }
-        });
+            .then(response => {
+                jwt(response.data.access_token);
+                signIn(response.data.user);
+                setLoading(false);
+                navigate('/')
+            })
+            .catch(error => {
+                setLoading(false)
+                if (error.response.data.statusCode == 401) {
+                    swal("Unauthorized!", "Incorrect password!", "error");
+                } else if (error.response.data.statusCode == 500) {
+                    swal("Check Your Email!", "Specified account does not exist!", "error");
+                } else {
+                    swal("Try Again!", "Unknown error has occurred!", "error");
+                }
+            });
     }
 
     useEffect(() => {
         const signUpButton = document.getElementById('signUp');
         const signInButton = document.getElementById('signIn');
         const container = document.getElementById('container');
-        
+
         signUpButton.addEventListener('click', () => {
             container.classList.add("right-panel-active");
         });
-        
+
         signInButton.addEventListener('click', () => {
             container.classList.remove("right-panel-active");
         });
     }, []);
 
     useEffect(() => {
-        if(emailRegex.test(email) === false || passwordRegex.test(password) === false ){
+
+        axios.get('http://localhost:3000/applications')
+            .then(response => {
+                setApplications(response.data)
+            })
+            .catch(error => {
+                console.error(error);
+            });
+
+        if (emailRegex.test(email) === false || passwordRegex.test(password) === false) {
             setDisablelogin(true);
             setDisableSignup(true)
 
-        }else{
+        } else {
             setDisablelogin(false);
             setDisableSignup(false)
         }
 
-        if((password==='' &&  touchedpassword) || (passwordRegex.test(password) === false && touchedpassword)){
+        if ((password === '' && touchedpassword) || (passwordRegex.test(password) === false && touchedpassword)) {
             setDisableerrorpassword(false)
-        }else{
+        } else {
             setDisableerrorpassword(true)
         }
 
-        if( lastname === '' || firstname === '' || address === '' || cin === '' || phone === ''){
+        if (lastname === '' || firstname === '' || address === '' || cin === '' || phone === '') {
             setDisableSignup(true)
 
-        }else{
+        } else {
             setDisableSignup(false)
         }
 
-        if(emailRegex.test(email) === false && touchedemail){
+        if (emailRegex.test(email) === false && touchedemail) {
             setDisableerroremail(false);
 
-        }else {
+        } else {
             setDisableerroremail(true);
         }
-        
-        if(lastname === '' && touchedlastname){
+
+        if (lastname === '' && touchedlastname) {
             setDisableerrorlastname(false)
-        }else{
+        } else {
             setDisableerrorlastname(true)
         }
 
-        if(firstname === '' && touchedfirstname){
+        if (firstname === '' && touchedfirstname) {
             setDisableerrorfirstname(false)
-        }else{
+        } else {
             setDisableerrorfirstname(true)
         }
 
-        if(address === '' && touchedaddress){
+        if (address === '' && touchedaddress) {
             setDisableerroraddress(false)
-        }else{
+        } else {
             setDisableerroraddress(true)
         }
 
-        if(cin === '' && touchedcin){
+        if (cin === '' && touchedcin) {
             setDisableerrorcin(false)
-        }else{
+        } else {
             setDisableerrorcin(true)
         }
 
-        if(phone === '' && touchedphone){
+        if (phone === '' && touchedphone) {
             setDisableerrorphone(false)
-        }else{
+        } else {
             setDisableerrorphone(true)
         }
 
-        if(confirmpassword !== password && touchedconfirmpassword){
+        if (confirmpassword !== password && touchedconfirmpassword) {
             setDisableerrorconfirmpassword(false)
-        }else{
+        } else {
             setDisableerrorconfirmpassword(true)
         }
     });
-    
+
     return (
         <div className="container cont" id="container">
+            <Modal onClose={() => setIsOpen(false)} open={IsOpen} application={application}>Hello</Modal>
             <div className="form-container sign-up-container">
                 <form>
+                    <h1>Sign up With</h1>
+                    <div className="social-container">
+                        {
+                            applications.map((data, index) => {
+                                return (
+                                    <a onClick={() => { setApplication(data); setIsOpen(true) }} href="#" className="social"><i className="fab fa-facebook-f"></i>{data.name}</a>
+                                )
+                            })
+                        }
+
+                    </div>
                     <h1>Sign up</h1>
-                    <input type="email" name="email" className="form-control"  placeholder="Enter email"
+                    <input type="email" name="email" className="form-control" placeholder="Enter email"
                         value={email}
-                        onChange={(e) => { setEmail(e.target.value);setTouchedemail(true); }}
+                        onChange={(e) => { setEmail(e.target.value); setTouchedemail(true); }}
                     />
                     <span className="left-side" hidden={disableerroremail}>enter a valid address</span>
-                    
+
                     <div className="row">
                         <div className="form-group col-md-6">
-                            <input type="text" name="lastname" className="form-control"  placeholder="Lastname"
+                            <input type="text" name="lastname" className="form-control" placeholder="Lastname"
                                 value={lastname}
-                                onChange={(e) => {setLastname(e.target.value);setTouchedlastname(true)}}
+                                onChange={(e) => { setLastname(e.target.value); setTouchedlastname(true) }}
                             />
                             <span className="left-side" hidden={disableerrorlastname}>enter a lastname</span>
                         </div>
 
                         <div className="form-group col-md-6">
-                            <input type="text" name="firstname" className="form-control"  placeholder="Firstname"
+                            <input type="text" name="firstname" className="form-control" placeholder="Firstname"
                                 value={firstname}
-                                onChange={(e) => {setFirstname(e.target.value);setTouchedfirstname(true)}}
+                                onChange={(e) => { setFirstname(e.target.value); setTouchedfirstname(true) }}
                             />
                             <span className="left-side" hidden={disableerrorfirstname}>enter a firstname</span>
                         </div>
@@ -236,43 +262,43 @@ const SignIn = () => {
 
                     <div className="row">
                         <div className="form-group col-md-6">
-                        <input type="password" name="password" className="form-control" placeholder="Password"
-                            value={password}
-                            onChange={(e) => {setPassword(e.target.value);setTouchedpassword(true)}}
-                        />
-                        <span className="left-side" hidden={disableerrorpassword}>Password does not meet the requirements</span>
+                            <input type="password" name="password" className="form-control" placeholder="Password"
+                                value={password}
+                                onChange={(e) => { setPassword(e.target.value); setTouchedpassword(true) }}
+                            />
+                            <span className="left-side" hidden={disableerrorpassword}>Password does not meet the requirements</span>
                         </div>
 
                         <div className="form-group col-md-6">
-                        <input type="confirmpassword" name="confirmpassword" className="form-control" placeholder="Confirm password"
-                            value={confirmpassword}
-                            onChange={(e) => {setConfirmpassword(e.target.value);setTouchedconfirmpassword(true)}}
-                        />
-                        <span className="left-side" hidden={disableerrorconfirmpassword}>password doesn't match </span>
+                            <input type="confirmpassword" name="confirmpassword" className="form-control" placeholder="Confirm password"
+                                value={confirmpassword}
+                                onChange={(e) => { setConfirmpassword(e.target.value); setTouchedconfirmpassword(true) }}
+                            />
+                            <span className="left-side" hidden={disableerrorconfirmpassword}>password doesn't match </span>
                         </div>
                     </div>
 
                     <input type="text" name="address" className="form-control" placeholder="Address"
                         value={address}
-                        onChange={(e) => {setAddress(e.target.value);setTouchedaddress(true)}}
+                        onChange={(e) => { setAddress(e.target.value); setTouchedaddress(true) }}
                     />
                     <span className="left-side" hidden={disableerroraddress}>enter an address</span>
 
                     <div className="row">
                         <div className="form-group col-md-6">
-                        <input type="number" name="cin" className="form-control"  placeholder="CIN"
-                            value={cin}
-                            onChange={(e) => {setCin(e.target.value);setTouchedcin(true)}}
-                        />
-                        <span className="left-side" hidden={disableerrorcin}>enter a cin</span>
+                            <input type="number" name="cin" className="form-control" placeholder="CIN"
+                                value={cin}
+                                onChange={(e) => { setCin(e.target.value); setTouchedcin(true) }}
+                            />
+                            <span className="left-side" hidden={disableerrorcin}>enter a cin</span>
                         </div>
 
                         <div className="form-group col-md-6">
-                        <input type="number" name="phone" className="form-control"  placeholder="Phone Number"
-                            value={phone}
-                            onChange={(e) => {setPhone(e.target.value);setTouchedphone(true)}}
-                        />
-                        <span className="left-side" hidden={disableerrorphone}>enter a phone number</span>
+                            <input type="number" name="phone" className="form-control" placeholder="Phone Number"
+                                value={phone}
+                                onChange={(e) => { setPhone(e.target.value); setTouchedphone(true) }}
+                            />
+                            <span className="left-side" hidden={disableerrorphone}>enter a phone number</span>
                         </div>
                     </div>
                     <div hidden={!loading} className="loader">
@@ -288,18 +314,28 @@ const SignIn = () => {
             </div>
             <div className="form-container sign-in-container">
                 <form>
+                    <h1>Sign in With</h1>
+                    <div className="social-container">
+                        {
+                            applications.map((data, index) => {
+                                return (
+                                    <a href="#" className="social"><i className="fab fa-facebook-f"></i>{data.name}</a>
+                                )
+                            })
+                        }
+                    </div>
                     <h1>Sign in</h1>
                     <div className="social-container"></div>
-                    
-                    <input type="email" name="email" className="form-control"  placeholder="Enter email"
+
+                    <input type="email" name="email" className="form-control" placeholder="Enter email"
                         value={email}
-                        onChange={(e) => { setEmail(e.target.value);setTouchedemail(true); }}
+                        onChange={(e) => { setEmail(e.target.value); setTouchedemail(true); }}
                     />
                     <span className="left-side" hidden={disableerroremail}>enter a valid address</span>
-                    
+
                     <input type="password" name="password" className="form-control" placeholder="Enter password"
                         value={password}
-                        onChange={(e) => {setPassword(e.target.value);setTouchedpassword(true);}}
+                        onChange={(e) => { setPassword(e.target.value); setTouchedpassword(true); }}
                     />
                     <span className="left-side" hidden={disableerrorpassword}>enter a password</span>
 
@@ -320,13 +356,13 @@ const SignIn = () => {
                     <div className="overlay-panel overlay-left">
                         <h1>Welcome Back!</h1>
                         <p>To keep connected with us please login with your personal info</p>
-                        <img src={logo} height="280px"/>
+                        <img src={logo} height="280px" />
                         <button className="ghost" id="signIn">Sign In</button>
                     </div>
                     <div className="overlay-panel overlay-right">
                         <h1>Hello, Friend!</h1>
                         <p>Enter your personal details and start journey with us</p>
-                        <img src={logoo} height="280px"/>
+                        <img src={logoo} height="280px" />
                         <button className="ghost" id="signUp">Sign Up</button>
                     </div>
                 </div>
