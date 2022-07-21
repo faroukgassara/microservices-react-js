@@ -85,16 +85,20 @@ const Modal = ({ open, children, onClose, application }) => {
         })
             .then(response => {
 
-                setAccounts((prevFriends) => [
-                    ...prevFriends,
+                 setAccounts((accounts) => [
+                    ...accounts,
                     {
                         items: response.data,
                         app: application.name,
                     },
                 ]);
                 //console.log(accounts)
+                if(accounts.length >0){
+                    localStorage.setItem('items', JSON.stringify(accounts));
 
-                localStorage.setItem('items', JSON.stringify(accounts));
+                }else{console.log("f")}
+
+                
 
                 //jwt(response.data.access_token);
                 //signIn(response.data.user);
@@ -191,9 +195,13 @@ const Modal = ({ open, children, onClose, application }) => {
     const [previousaccounts, setPreviousaccounts] = useState();
 
 
+
+
     useEffect(() => {
-        const items = JSON.parse(localStorage.getItem('items'));
-        setItems(items);
+        const itemss = JSON.parse(localStorage.getItem('items'));
+        
+
+        setItems(itemss);
         if (items != undefined) {
             items.map((data, index) => {
                 //console.log(application)
@@ -203,14 +211,12 @@ const Modal = ({ open, children, onClose, application }) => {
                     }
                 } else {
                     return;
-                    //console.log("f")
                 }
-                //console.log(previousaccounts)
             })
+
         }
 
-        //console.log(items)
-        //{previousaccounts ? 'currently' : 'not'}
+
     }, [application])
 
 
