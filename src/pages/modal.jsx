@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import './signin.css'
+import './modal.scss'
 import logo from '../assets/images/signupp.png';
 import logoo from '../assets/images/ab.png';
 import axios from 'axios';
@@ -166,7 +166,7 @@ const Modal = ({ open, children, onClose, application }) => {
 
     const MODAL_STYLES = {
         position: 'fixed',
-        top: '-25%',
+        top: '-45%',
         left: '50%',
         transform: 'translate(-50%,+50%)',
         backgroundColor: '#FFF',
@@ -194,18 +194,20 @@ const Modal = ({ open, children, onClose, application }) => {
     useEffect(() => {
         const items = JSON.parse(localStorage.getItem('items'));
         setItems(items);
-        items.map((data, index) => {
-            //console.log(application)
-            if (application !== undefined) {
-                if (data.app == application.name) {
-                    setPreviousaccounts(true)
+        if (items != undefined) {
+            items.map((data, index) => {
+                //console.log(application)
+                if (application !== undefined) {
+                    if (data.app == application.name) {
+                        setPreviousaccounts(true)
+                    }
+                } else {
+                    return;
+                    //console.log("f")
                 }
-            } else {
-                return;
-                //console.log("f")
-            }
-            console.log(previousaccounts)
-        })
+                //console.log(previousaccounts)
+            })
+        }
 
         //console.log(items)
         //{previousaccounts ? 'currently' : 'not'}
@@ -310,7 +312,31 @@ const Modal = ({ open, children, onClose, application }) => {
     return (
         <div style={OVERLAY_STYLES}>
             <div style={MODAL_STYLES}>
-                {previousaccounts ? 'currently' :
+                {previousaccounts ?
+
+                    items.map((data, index) => {
+                        if (application !== undefined) {
+                            if (data.app == application.name) {
+                                return (
+                                    <main class="leaderboard__profiles">
+                                        <article class="leaderboard__profile">
+                                            <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Mark Zuckerberg" class="leaderboard__picture" />
+                                            <span class="leaderboard__name">{data.items.email}</span>
+                                            <span class="leaderboard__value">{35.7}<span>B</span></span>
+                                        </article>
+                                    </main>
+                                )
+                            }
+                        } else {
+                            return;
+                            //console.log("f")
+                        }
+
+                    })
+
+
+
+                    :
                     <div>
                         <div hidden={disablesignin}>
 
