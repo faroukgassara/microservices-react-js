@@ -15,6 +15,11 @@ import PageNotFound from './pages/pagenotfound'
 import SignUp from './pages/Signup'
 function App() {
     const state = useSelector((state) => state);
+    if(JSON.parse(localStorage.getItem('items')) == undefined){
+        localStorage.setItem('items',[ JSON.stringify([])]);
+
+    }
+    
 
     return (
         <BrowserRouter>

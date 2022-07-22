@@ -64,11 +64,21 @@ const Modal = ({ open, children, onClose, application }) => {
     const [applications, setApplications] = useState([])
     const [IsOpen, setIsOpen] = useState(false)
     const [users, setUsers] = useState([])
+    const [previousaccounts, setPreviousaccounts] = useState(false);
 
     const [items, setItems] = useState([]);
+    const [accounts, setAccounts] = useState([JSON.parse(localStorage.getItem('items'))][0] );
 
-    const [accounts, setAccounts] = useState([]);
 
+
+
+
+    useEffect(() => {
+        if(accounts!=null){
+            localStorage.setItem('items', JSON.stringify(accounts));
+        }
+      
+    }, [accounts]);
 
     const LogIn = event => {
         event.preventDefault()
@@ -85,20 +95,16 @@ const Modal = ({ open, children, onClose, application }) => {
         })
             .then(response => {
 
-                 setAccounts((accounts) => [
-                    ...accounts,
-                    {
-                        items: response.data,
-                        app: application.name,
-                    },
-                ]);
-                //console.log(accounts)
-                if(accounts.length >0){
-                    localStorage.setItem('items', JSON.stringify(accounts));
 
-                }else{console.log("f")}
+                setAccounts( [...accounts, {
+                    items: response.data,
+                    app: application.name,
+                }] )
+                console.log(accounts)
 
-                
+
+
+
 
                 //jwt(response.data.access_token);
                 //signIn(response.data.user);
@@ -170,7 +176,7 @@ const Modal = ({ open, children, onClose, application }) => {
 
     const MODAL_STYLES = {
         position: 'fixed',
-        top: '-45%',
+        top: '-25%',
         left: '50%',
         transform: 'translate(-50%,+50%)',
         backgroundColor: '#FFF',
@@ -192,35 +198,16 @@ const Modal = ({ open, children, onClose, application }) => {
         overflow: 'auto',
     }
 
-    const [previousaccounts, setPreviousaccounts] = useState();
-
-
-
 
     useEffect(() => {
-        const itemss = JSON.parse(localStorage.getItem('items'));
-        
+        console.log(accounts[0])
 
-        setItems(itemss);
-        if (items != undefined) {
-            items.map((data, index) => {
-                //console.log(application)
-                if (application !== undefined) {
-                    if (data.app == application.name) {
-                        setPreviousaccounts(true)
-                    }
-                } else {
-                    return;
-                }
-            })
 
-        }
 
 
     }, [application])
 
-
-
+    
     useEffect(() => {
 
         axios.get('http://localhost:3000/applications')
@@ -314,31 +301,14 @@ const Modal = ({ open, children, onClose, application }) => {
     };
 
 
+    
 
     return (
         <div style={OVERLAY_STYLES}>
             <div style={MODAL_STYLES}>
-                {previousaccounts ?
+                {previousaccounts ?<div>jii</div>
 
-                    items.map((data, index) => {
-                        if (application !== undefined) {
-                            if (data.app == application.name) {
-                                return (
-                                    <main class="leaderboard__profiles">
-                                        <article class="leaderboard__profile">
-                                            <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Mark Zuckerberg" class="leaderboard__picture" />
-                                            <span class="leaderboard__name">{data.items.email}</span>
-                                            <span class="leaderboard__value">{35.7}<span>B</span></span>
-                                        </article>
-                                    </main>
-                                )
-                            }
-                        } else {
-                            return;
-                            //console.log("f")
-                        }
-
-                    })
+                    
 
 
 
