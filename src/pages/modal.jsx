@@ -198,16 +198,6 @@ const Modal = ({ open, children, onClose, application }) => {
         overflow: 'auto',
     }
 
-
-    useEffect(() => {
-        console.log(accounts[0])
-
-
-
-
-    }, [application])
-
-    
     useEffect(() => {
 
         axios.get('http://localhost:3000/applications')
@@ -283,6 +273,21 @@ const Modal = ({ open, children, onClose, application }) => {
 
     });
 
+    useEffect(() => {
+
+        if (accounts != undefined) {
+            accounts.map((data, index) => {
+                if (application !== undefined) {
+                    if (data.app == application.name) {
+                        setPreviousaccounts(true)
+                    }
+                } else {
+                    return;
+                }
+            })
+        }
+    }, [application])
+
     const [disablesignin, setDisablesignin] = useState(false);
     const [disablessignup, setDisablessignup] = useState(true);
 
@@ -306,11 +311,26 @@ const Modal = ({ open, children, onClose, application }) => {
     return (
         <div style={OVERLAY_STYLES}>
             <div style={MODAL_STYLES}>
-                {previousaccounts ?<div>jii</div>
+                {previousaccounts ?
+                  accounts.map((data, index) => {
+                    if (application !== undefined) {
+                        if (data.app == application.name) {
+                            return (
+                                <main class="leaderboard__profiles">
+                                    <article class="leaderboard__profile">
+                                        <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Mark Zuckerberg" class="leaderboard__picture" />
+                                        <span class="leaderboard__name">{data.items.email}</span>
+                                        <span class="leaderboard__value">{35.7}<span>B</span></span>
+                                    </article>
+                                </main>
+                            )
+                        }
+                    } else {
+                        return;
+                        //console.log("f")
+                    }
 
-                    
-
-
+                })
 
                     :
                     <div>

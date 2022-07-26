@@ -12,10 +12,10 @@ const sidebarNav = [
         text: 'Users Management'
     },
     {
-        link: '/products',
-        section: 'products',
+        link: '/applications',
+        section: 'applications',
         icon: <i className='bx bx-cube'></i>,
-        text: 'Products'
+        text: 'Applications'
     },
     {
         link: '/customers',

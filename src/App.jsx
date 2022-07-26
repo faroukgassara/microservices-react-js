@@ -13,6 +13,7 @@ import ProtectedRoutes from './configs/protectedRoutes'
 import { useSelector,useDispatch } from "react-redux";
 import PageNotFound from './pages/pagenotfound'
 import SignUp from './pages/Signup'
+import Applications from './pages/applications'
 function App() {
     const state = useSelector((state) => state);
     if(JSON.parse(localStorage.getItem('items')) == undefined){
@@ -34,7 +35,7 @@ function App() {
                 <Route path="/" element={<ProtectedRoutes jwt={state.user.jwt}> <MainLayout /> </ProtectedRoutes>}>
                     <Route index element={<Dashboard />} />
                     <Route path="usersmanagement" element={<UsersManagement />} />
-                    <Route path="products" element={<Blank />} />
+                    <Route path="applications" element={<Applications />} />
                     <Route path="customers" element={<Blank />} />
                     <Route path="settings" element={<Blank />} />
                     <Route path="stats" element={<Blank />} />
