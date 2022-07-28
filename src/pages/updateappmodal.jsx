@@ -38,7 +38,7 @@ const UpdateAppModal = ({ open, children, onClose,row }) => {
         backgroundColor: '#FFF',
         width: '500px',
         maxWidth: '100%',
-        height: '400px',
+        height: '450px',
         maxHeight: '100%',
         zIndex: 1000,
     }
@@ -85,16 +85,23 @@ const UpdateAppModal = ({ open, children, onClose,row }) => {
         event.preventDefault()
         setLoading(true)
         const application = JSON.stringify({
+            "_id":row._id,
             "url": url,
             "name": name,
             "isDeleted":false
         });
-        axios.post('http://localhost:3000/applications', application, {
+        axios.put('http://localhost:3000/applications/'+row._id, application, {
             headers: {
                 'Content-Type': 'application/json'
             }
         })
-        .then(response => {setLoading(false);onClose();console.log("response.data")})
+        .then(response => {setLoading(false);onClose();swal({
+            position: 'top-end',
+            icon: 'success',
+            title: 'Your work has been saved',
+            showConfirmButton: false,
+            timer: 2500
+          })})
         .catch(error => {
             setLoading(false)
             swal("Try Again!", "Name or Url Already Exist!", "error");
@@ -114,7 +121,7 @@ const UpdateAppModal = ({ open, children, onClose,row }) => {
         <div style={OVERLAY_STYLES}>
             <div style={MODAL_STYLES}>
                 <form>
-                    <h1>New Application {row.name}</h1>
+                    <h1>Edit Application {row.name}</h1>
                     <div className="social-container"></div>
 
                     <input type="url" name="url" className="form-control" placeholder={row.url}

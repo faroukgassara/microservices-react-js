@@ -78,8 +78,8 @@ const SignIn = () => {
             "age": 15,
             "address": address,
             "cin": Number(cin),
-            "locked": true,
-            "enabled": true,
+            "locked": false,
+            "enabled": false,
             "picture": "efef",
             "phone": Number(phone)
         });
@@ -319,10 +319,11 @@ const SignIn = () => {
                         {
                             applications.map((data, index) => {
                                 return (
-                                    <a href="#" className="social"><i className="fab fa-facebook-f"></i>{data.name}</a>
+                                    <a onClick={() => { setApplication(data); setIsOpen(true) }} href="#" className="social"><i className="fab fa-facebook-f"></i>{data.name}</a>
                                 )
                             })
                         }
+
                     </div>
                     <h1>Sign in</h1>
                     <div className="social-container"></div>

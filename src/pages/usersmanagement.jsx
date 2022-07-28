@@ -15,10 +15,10 @@ import BootstrapTable from 'react-bootstrap-table-next';
 //import 'react-bootstrap-table-next/dist/react-bootstrap-table2.css'
 
 import paginationFactory from "react-bootstrap-table2-paginator";
-import 'react-bootstrap-table2-paginator/dist/react-bootstrap-table2-paginator.min.css'
+//import 'react-bootstrap-table2-paginator/dist/react-bootstrap-table2-paginator.min.css'
 
 import filterFactory, { textFilter } from 'react-bootstrap-table2-filter';
-import 'react-bootstrap-table2-filter/dist/react-bootstrap-table2-filter.min.css'
+//import 'react-bootstrap-table2-filter/dist/react-bootstrap-table2-filter.min.css'
 import cellEditFactory from 'react-bootstrap-table2-editor';
 import {
     Chart as ChartJS,
@@ -37,6 +37,8 @@ import RevenueList from '../components/revenue-list/RevenueList'
 import { AiFillDelete, AiFillEdit, AiOutlineSend } from "react-icons/ai";
 import AddUserModal from "./addusermodal";
 import RoleModal from "./rolemodal";
+import UpdateAppModal from "./updateappmodal";
+import UpdateUserModal from "./updateusermodal";
 ChartJS.register(
     CategoryScale,
     LinearScale,
@@ -101,6 +103,12 @@ const UsersManagement = () => {
         margin: '2px',
     };
 
+    const PaginationBtntyle = {
+        backgroundColor: '#4CAF50',
+        padding: '10px',
+        margin: '2px',
+    };
+
     const sendBtnstyle = {
         backgroundColor: '#008CBA',
         padding: '10px',
@@ -133,7 +141,7 @@ const UsersManagement = () => {
                 <button style={sendBtnstyle} onClick={() =>{ setIsOpenRole(true);setRow(row)}} type="button" className="btn btn-danger"> <AiOutlineSend /></button>
 
 
-                <button style={editBtntyle} onClick={() => editUser(row)} type="button" className="btn btn-danger"> <AiFillEdit /></button>
+                <button style={editBtntyle} onClick={() => {setIsOpenUpdate(true);setRow(row)} }type="button" className="btn btn-danger"> <AiFillEdit /></button>
 
                 <button style={deleteBtnStyle} onClick={() => deleteUser(row)} type="button" className="btn btn-danger"> <AiFillDelete /></button>
 
@@ -214,45 +222,45 @@ const UsersManagement = () => {
         afterSaveCell: onAfterSaveCell,
     });
 
-    const sizePerPageOptionRenderer = ({
-        text,
-        page,
+    const sizePerPageRenderer = ({
+        options,
+        currSizePerPage,
         onSizePerPageChange
       }) => (
-        <li
-          key={ text }
-          role="presentation"
-          className="dropdown-item"
-        >
-          <a
-            href="#"
-            tabIndex="-1"
-            role="menuitem"
-            data-page={ page }
-            onMouseDown={ (e) => {
-              e.preventDefault();
-              onSizePerPageChange(page);
-            } }
-            style={ { color: 'red' } }
-          >
-            { text }
-          </a>
-        </li>
+        <div  role="group">
+          {
+            options.map((option) => {
+              const isSelect = currSizePerPage === `${option.page}`;
+              return (
+                <button
+                  key={ option.text }
+                  type="button"
+                  onClick={ () => onSizePerPageChange(option.page) }
+                 style={PaginationBtntyle}
+                >
+                  { option.text }
+                </button>
+              );
+            })
+          }
+        </div>
       );
+
 
     const paginator = paginationFactory({
         page: 1,
-        sizePerPage: 1,
+        sizePerPage: 10,
         lastPageText: '>>',
         firstPageText: '<<',
         nextPageText: '>',
         prePageText: '<',
 
-        sizePerPageOptionRenderer
+        sizePerPageRenderer
     })
 
     const [IsOpen, setIsOpen] = useState(false)
     const [IsOpenRole, setIsOpenRole] = useState(false)
+    const [IsOpenUpdate, setIsOpenUpdate] = useState(false)
 
     const [r, setR] = useState("");
     const [show, setShow] = useState(true);
@@ -282,6 +290,10 @@ const UsersManagement = () => {
             <DashboardWrapperMain>
                 <div className="row">
                     <AddUserModal onClose={() => setIsOpen(false)} open={IsOpen}>Hello</AddUserModal>
+                </div>
+
+                <div className="row">
+                    <UpdateUserModal onClose={() => setIsOpenUpdate(false)} open={IsOpenUpdate} row={row}>Hello</UpdateUserModal>
                 </div>
                 
                 

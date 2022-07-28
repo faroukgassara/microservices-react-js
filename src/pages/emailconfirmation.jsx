@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import './signin.css'
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
+import logoo from '../assets/images/conf.png';
 const EmailConfirmation = () => {
 
     const params = useParams()
@@ -15,8 +16,8 @@ const EmailConfirmation = () => {
     }, []);
     
     return (
-        <div className="container" id="container">
-            Confirmed
+        <div className="container cont" id="container">
+            <img src={logoo} />
         </div>
     )
 }

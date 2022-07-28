@@ -9,7 +9,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { bindActionCreators } from 'redux';
 import { actionsCreators } from '../actions/index';
 import { Select } from '@material-ui/core';
-const AddUserModal = ({ open, children, onClose }) => {
+const UpdateUserModal = ({ open, children, onClose, row }) => {
 
     const emailRegex = RegExp(
         /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
@@ -68,19 +68,9 @@ const AddUserModal = ({ open, children, onClose }) => {
 
     const [items, setItems] = useState([]);
 
-    const [checked, setChecked] = useState(false);
-    const toggleChecked = () => setChecked(value => !value);
-
-    const [checkedd, setCheckedd] = useState(false);
-    const toggleCheckedd = () => setCheckedd(value => !value);
-
 
     useEffect(() => {
 
-        axios.get('http://localhost:3000/applications')
-            .then(response => {
-                setApplications(response.data)
-            })
 
         if (emailRegex.test(email) === false || passwordRegex.test(password) === false) {
             setDisablelogin(true);
@@ -176,12 +166,18 @@ const AddUserModal = ({ open, children, onClose }) => {
     }
 
 
+    const [checked, setChecked] = useState(false);
+    const toggleChecked = () => setChecked(value => !value);
+
+    const [checkedd, setCheckedd] = useState(false);
+    const toggleCheckedd = () => setCheckedd(value => !value);
+
     const SignUp = event => {
         event.preventDefault()
         setLoading(true)
         const user = JSON.stringify({
-            "email": email,
-            "password": password,
+            "_id": row._id,
+            "email": row.email,
             "firstname": firstname,
             "lastname": lastname,
             "age": 15,
@@ -192,34 +188,21 @@ const AddUserModal = ({ open, children, onClose }) => {
             "picture": "efef",
             "phone": Number(phone)
         });
-        axios.post('http://localhost:3000/users/signup', user, {
+        axios.put('http://localhost:3000/users/' + row._id, user, {
             headers: {
                 'Content-Type': 'application/json'
             }
+        }).then(response => {
+            setLoading(false);
+            onClose();
+            swal({
+                position: 'top-end',
+                icon: 'success',
+                title: 'Your work has been saved',
+                showConfirmButton: false,
+                timer: 2500
+              })
         })
-            .then(response => {
-                const aff = JSON.stringify({
-                    "users": response.data._id,
-                    "applications": app_id,
-                });
-                axios.post('http://localhost:3000/affectation', aff, {
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
-                })
-                .then(response => { onClose();setLoading(false);swal({
-                    position: 'top-end',
-                    icon: 'success',
-                    title: 'Your work has been saved',
-                    showConfirmButton: false,
-                    timer: 2500
-                  }) })
-                .catch(error => {
-                        setLoading(false)
-                        swal("Try Again!", "Unknown error has occurred!", "error");
-
-                    });
-            })
             .catch(error => {
                 setLoading(false)
                 if (error.response.data.statusCode == 500) {
@@ -229,16 +212,6 @@ const AddUserModal = ({ open, children, onClose }) => {
                 }
             });
     }
-
-    const [tableData, setTableData] = useState([]);
-
-    useEffect(() => {
-        axios.get('http://localhost:3000/applications')
-            .then(response => { setTableData(response.data); })
-            .catch(error => {
-                console.error(error)
-            });
-    }, [])
 
 
     const [disablesignin, setDisablesignin] = useState(false);
@@ -251,9 +224,11 @@ const AddUserModal = ({ open, children, onClose }) => {
         <div style={OVERLAY_STYLES}>
             <div style={MODAL_STYLES}>
                 <form>
-                    <h1>Add User</h1>
+
+                    <h1>Edit User</h1>
                     <input type="email" name="email" className="form-control" placeholder="Enter email"
-                        value={email}
+                        value={row.email}
+                        readOnly="readOnly"
                         onChange={(e) => { setEmail(e.target.value); setTouchedemail(true); }}
                     />
                     <span className="left-side" hidden={disableerroremail}>enter a valid email</span>
@@ -273,24 +248,6 @@ const AddUserModal = ({ open, children, onClose }) => {
                                 onChange={(e) => { setFirstname(e.target.value); setTouchedfirstname(true) }}
                             />
                             <span className="left-side" hidden={disableerrorfirstname}>enter a firstname</span>
-                        </div>
-                    </div>
-
-                    <div className="row">
-                        <div className="form-group col-md-6">
-                            <input type="password" name="password" className="form-control" placeholder="Password"
-                                value={password}
-                                onChange={(e) => { setPassword(e.target.value); setTouchedpassword(true) }}
-                            />
-                            <span className="left-side" hidden={disableerrorpassword}>Password does not meet the requirements</span>
-                        </div>
-
-                        <div className="form-group col-md-6">
-                            <input type="confirmpassword" name="confirmpassword" className="form-control" placeholder="Confirm password"
-                                value={confirmpassword}
-                                onChange={(e) => { setConfirmpassword(e.target.value); setTouchedconfirmpassword(true) }}
-                            />
-                            <span className="left-side" hidden={disableerrorconfirmpassword}>password doesn't match </span>
                         </div>
                     </div>
 
@@ -364,21 +321,6 @@ const AddUserModal = ({ open, children, onClose }) => {
 
 
 
-
-                    <select
-                        className="select-box"
-
-                        onChange={(e) => { setAppid(e.target.value); }}
-                    >
-                        <option defaultValue>Choose App</option>
-                        {tableData.map((item, index) => (
-                            <option key={index} value={item._id}>
-                                {item.url}
-                            </option>
-                        ))}
-                    </select>
-
-
                     <div hidden={!loading} className="loader">
                         <span></span>
                         <span></span>
@@ -387,7 +329,7 @@ const AddUserModal = ({ open, children, onClose }) => {
                         <span></span>
                         <span></span>
                     </div>
-                    <button onClick={SignUp}>Add</button>
+                    <button onClick={SignUp}>Edit </button>
                 </form>
             </div>
 
@@ -395,4 +337,4 @@ const AddUserModal = ({ open, children, onClose }) => {
 
     )
 }
-export default AddUserModal
+export default UpdateUserModal

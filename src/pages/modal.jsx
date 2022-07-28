@@ -9,6 +9,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { bindActionCreators } from 'redux';
 import { actionsCreators } from '../actions/index';
 import SignIn from './Signin';
+import { AiFillDelete,AiFillEdit,AiOutlineSend } from "react-icons/ai";
 const Modal = ({ open, children, onClose, application }) => {
 
     const emailRegex = RegExp(
@@ -148,8 +149,8 @@ const Modal = ({ open, children, onClose, application }) => {
             "age": 15,
             "address": address,
             "cin": Number(cin),
-            "locked": true,
-            "enabled": true,
+            "locked": false,
+            "enabled": false,
             "picture": "efef",
             "phone": Number(phone)
         });
@@ -171,6 +172,13 @@ const Modal = ({ open, children, onClose, application }) => {
                     .then(response => {
                         setLoading(false);
                         navigate('/');
+                        swal({
+                            position: 'top-end',
+                            icon: 'success',
+                            title: 'Your work has been saved',
+                            showConfirmButton: false,
+                            timer: 2500
+                          })
                     })
                     .catch(error => {
                         setLoading(false)
@@ -199,7 +207,7 @@ const Modal = ({ open, children, onClose, application }) => {
         height: '600px',
         maxHeight: '100%',
         zIndex: 1000,
-        paddingTop: '100px'
+        paddingTop: '*90px'
     }
 
     const OVERLAY_STYLES = {
@@ -324,17 +332,23 @@ const Modal = ({ open, children, onClose, application }) => {
 
 
    
+    const deleteRoleBtnstyle = {
+        padding: '5%',
+        
+    };
 
 
     return (
         <div style={OVERLAY_STYLES}>
             <div style={MODAL_STYLES}>
+            <div style={deleteRoleBtnstyle} hidden={pass}>
 
-                <input type="password" name="password" className="form-control" placeholder="Password"
+                <input type="password" name="password"  placeholder="Password"
                     value={password}
                     hidden={pass}
                     onChange={(e) => { setPassword(e.target.value); setTouchedpassword(true) }}
                 />
+                </div>
 
                 {previousaccounts ?
                     accounts.map((data, index) => {
@@ -345,7 +359,7 @@ const Modal = ({ open, children, onClose, application }) => {
                                         <article class="leaderboard__profile">
 
                                             <span class="leaderboard__name">{data.items.email}</span>
-                                            <a onClick={LogIn}><span class="leaderboard__value">{35.7}<span>B</span></span></a>
+                                            <a onClick={LogIn}><span class="leaderboard__value"><AiOutlineSend /></span></a>
                                         </article>
 
                                     </main></a>
@@ -392,7 +406,7 @@ const Modal = ({ open, children, onClose, application }) => {
                         </div>
                         <div hidden={disablessignup}>
                             <form>
-                                <h1>Sign up</h1>
+                                <h1>Sign up</h1> With {application.name}
                                 <input type="email" name="email" className="form-control" placeholder="Enter email"
                                     value={email}
                                     onChange={(e) => { setEmail(e.target.value); setTouchedemail(true); }}

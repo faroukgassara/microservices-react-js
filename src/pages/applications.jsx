@@ -163,20 +163,26 @@ const Applications = () => {
 
 
     function deleteApp(row) {
-        console.log(row)
-        axios.delete('http://localhost:3000/applications/'+row._id)
-        .then(response => {console.log("response.data")})
-        .catch(error => {
-            swal("Try Again!", "Unknown error has occurred!", "error");
-        });
+        if (window.confirm('Do you want to add this role?')) {
+            axios.delete('http://localhost:3000/applications/'+row._id)
+            .then(response => {swal({
+                position: 'top-end',
+                icon: 'success',
+                title: 'Your work has been saved',
+                showConfirmButton: false,
+                timer: 2500
+              })})
+            .catch(error => {
+                swal("Try Again!", "Unknown error has occurred!", "error");
+            });
+        }
+        
+
     }
 
 
 
-    function affectRoleToUser(row) {
-        console.log(row)
 
-    }
 
     const deleteBtnStyle = {
         backgroundColor: '#f44336',
@@ -239,21 +245,48 @@ const Applications = () => {
     ]
 
 
-    const paginator = paginationFactory({
-        page : 1, 
-        sizePerPage : 5,
-        lastPageText :'>>',
-        firstPageText:'<<',
-        nextPageText:'>',
-        prePageText:'<',
-        showTotal:true,
-        alwaysShowAllBtns:true,
-        onPageChange:function(page,sizePerPage){
-            console.log(page)
-            console.log(sizePerPage)
-        }
-    })
+    const PaginationBtntyle = {
+        backgroundColor: '#4CAF50',
+        padding: '10px',
+        margin: '2px',
+    };
 
+
+    const sizePerPageRenderer = ({
+        options,
+        currSizePerPage,
+        onSizePerPageChange
+      }) => (
+        <div  role="group">
+          {
+            options.map((option) => {
+              const isSelect = currSizePerPage === `${option.page}`;
+              return (
+                <button
+                  key={ option.text }
+                  type="button"
+                  onClick={ () => onSizePerPageChange(option.page) }
+                  style={PaginationBtntyle}
+                >
+                  { option.text }
+                </button>
+              );
+            })
+          }
+        </div>
+      );
+
+      
+    const paginator = paginationFactory({
+        page: 1,
+        sizePerPage: 10,
+        lastPageText: '>>',
+        firstPageText: '<<',
+        nextPageText: '>',
+        prePageText: '<',
+
+        sizePerPageRenderer
+    })
 
 
     return (

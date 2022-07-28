@@ -92,7 +92,7 @@ const ForgotPassword = () => {
             <div className="overlay-container">
                 <div className="overlay">
                     <div className="overlay-panel overlay-left">
-                        <h1>Welcome Back!</h1>
+                        <h1>Did You Forget Your Password!</h1>
                         <img src={logof}/>
                         <button className="ghost" id="signIn">Switch</button>
                     </div>

@@ -36,10 +36,14 @@ const Sidebar = () => {
 
     }
 
+    const adduserbtn = {
+        width: '200%'
+    };
+
     return (
         <div className='sidebar'>
             <div className="sidebar__logo">
-                <img src={images.logo} alt="" />
+                <img style={adduserbtn} src="https://piximind.com/themes/pkurg-spacebootstrap5/assets/img/svg/logo.svg" alt="Piximind" />
                 <div className="sidebar-close" onClick={closeSidebar}>
                     <i className='bx bx-x'></i>
                 </div>

@@ -32,9 +32,16 @@ const ResetPassword = () => {
               'Content-Type': 'application/json'
             }
         })
-        .then(response => {setLoading(false);navigator('/auth')})
+        .then(response => {setLoading(false);swal({
+            position: 'top-end',
+            icon: 'success',
+            title: 'You Con Login With Your New Password',
+            showConfirmButton: false,
+            timer: 2500
+          })})
         .catch(error => {
             setLoading(false)
+            console.log(error)
             swal("Try Again!", "Unknown error has occurred!", "error");
         });
     }
@@ -110,7 +117,7 @@ const ResetPassword = () => {
             <div className="overlay-container">
                 <div className="overlay">
                     <div className="overlay-panel overlay-left">
-                        <h1>Welcome Back!</h1>
+                        <h1>Did You Forget Your Password?</h1>
                         <img src={logo}/>
                         <button className="ghost" id="signIn">Switch</button>
                     </div>
