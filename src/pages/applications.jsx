@@ -7,7 +7,7 @@ import Box from '../components/box/Box'
 import DashboardWrapper, { DashboardWrapperMain, DashboardWrapperRight } from '../components/dashboard-wrapper/DashboardWrapper'
 import SummaryBox, { SummaryBoxSpecial } from '../components/summary-box/SummaryBox'
 import { colors, data } from '../constants'
-
+import cellEditFactory from 'react-bootstrap-table2-editor';
 
 import BootstrapTable from 'react-bootstrap-table-next';
 //import 'bootstrap/dist/css/bootstrap.min.css'
@@ -35,6 +35,9 @@ import RevenueList from '../components/revenue-list/RevenueList'
 
 import { AiFillDelete,AiFillEdit,AiOutlineSend } from "react-icons/ai";
 import ApplicationsModal from "./applicationsmodal";
+import swal from "sweetalert";
+import UpdateAppModal from "./updateappmodal";
+import RoleModal from "./rolemodal";
 ChartJS.register(
     CategoryScale,
     LinearScale,
@@ -50,6 +53,8 @@ const Applications = () => {
 
     const [tableData, setTableData] = useState([]);
     const [IsOpen, setIsOpen] = useState(false);
+    const [IsOpenApp, setIsOpenApp] = useState(false);
+    const [rolestableData, setRolesTableData] = useState([])
 
     useEffect(() => {
         axios.get('http://localhost:3000/applications')
@@ -59,29 +64,114 @@ const Applications = () => {
         });
     })
 
-    const [selectedRowAction, setSelectedRowAction] = useState(null);
+    
+    useEffect(() => {
+        axios.get('http://localhost:3000/roles')
+            .then(response => { setRolesTableData(response.data) })
+            .catch(error => {
+                console.error(error)
+            });
+    }, [])
 
-    const handleActionsClick = selectedRowId => {
-        setSelectedRowAction(selectedRowId);
+    const onAfterSaveCell = (value, name, row) => {
+        if (value !== name) {
+            if (window.confirm('Do you want to accep this change?')) {
+                const roles = JSON.stringify({
+                    "_id": row._id,
+                    "name": row.name,
+                });
+                axios.put('http://localhost:3000/roles/' + row._id, roles, {
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+                    .then(response => { console.log("response.data") })
+                    .catch(error => {
+                        console.error(error)
+                    });
+            }
+        }
     };
 
-    function deleteUser(row) {
+    
+    const deleteRoleBtnstyle = {
+        backgroundColor: '#f44336',
+        padding: '10px',
+        margin: '1px',
+    };
+
+    function deleteRole(row) {
+        console.log(row)
+        axios.delete('http://localhost:3000/roles/' + row._id)
+            .then(response => { console.log("response.data") })
+            .catch(error => {
+                console.error(error)
+            });
+    }
+
+    const actionsrolesFormatter = (cell, row, rowIndex, formatExtraData) => {
+        return (
+            <div >
+                <button style={deleteRoleBtnstyle} onClick={() => deleteRole(row)} type="button" className="btn btn-danger"> <AiFillDelete /></button>
+
+            </div>
+        );
+    };
+
+    const cellEdit = cellEditFactory({
+        mode: 'dbclick',
+        blurToSave: true,
+        afterSaveCell: onAfterSaveCell,
+    });
+
+    const addRole = () => {
+
+        if (window.confirm('Do you want to add this role?')) {
+            const roles = JSON.stringify({
+                "name": r,
+            });
+            axios.post('http://localhost:3000/roles', roles, {
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+                .then(response => { console.log("response.data") })
+                .catch(error => {
+                    console.error(error)
+                });
+        }
+
+
+    };
+
+    const columnsRole = [
+        {
+            dataField: 'name', text: 'Name', sort: true, filter: textFilter(),
+        },
+        {
+            dataField: "actions",
+            text: "Actions",
+            formatter: actionsrolesFormatter
+        }
+    ]
+
+    const [row, setRow] = useState(null);
+    const [r, setR] = useState("");
+    const [show, setShow] = useState(true);
+    const [IsOpenRole, setIsOpenRole] = useState(false)
+
+
+
+    function deleteApp(row) {
         console.log(row)
         axios.delete('http://localhost:3000/applications/'+row._id)
         .then(response => {console.log("response.data")})
         .catch(error => {
-            console.error(error)
+            swal("Try Again!", "Unknown error has occurred!", "error");
         });
     }
 
-    function editUser(row) {
-        console.log(row)
-        axios.delete('http://localhost:3000/users/'+row._id)
-        .then(response => {console.log("response.data")})
-        .catch(error => {
-            console.error(error)
-        });
-    }
+
 
     function affectRoleToUser(row) {
         console.log(row)
@@ -112,26 +202,32 @@ const Applications = () => {
         margin:'10px',
     };
 
+    const adduserbtn = {
+        backgroundColor: '#555555',
+        padding: '10px',
+        margin: '10px',
+    };
+
     
 
     const actionsFormatter = (cell, row, rowIndex, formatExtraData) => {
         return (
             <div className="row">
-                <button style={sendBtnstyle} onClick={() => affectRoleToUser(row)} type="button" className="btn btn-danger"> <AiOutlineSend /></button>
+                <button style={sendBtnstyle} onClick={() =>{ setIsOpenRole(true);setRow(row)}} type="button" className="btn btn-danger"> <AiOutlineSend /></button>
                 
               
-                <button style={editBtntyle} onClick={() => editUser(row)} type="button" className="btn btn-danger"> <AiFillEdit /></button>
+                <button style={editBtntyle} onClick={() => {setRow(row);setIsOpenApp(true)}} type="button" className="btn btn-danger"> <AiFillEdit /></button>
                
              
-                <button style={deleteBtnStyle} onClick={() => deleteUser(row)} type="button" className="btn btn-danger"> <AiFillDelete /></button>
+                <button style={deleteBtnStyle} onClick={() => deleteApp(row)} type="button" className="btn btn-danger"> <AiFillDelete /></button>
               
             </div>
         );
       };
 
     const columns = [
-        {dataField:'url',text:'url',sort:true,filter: textFilter()},
-        {dataField:'name',text:'name',sort:true,filter: textFilter()},
+        {dataField:'url',text:'Url',sort:true,filter: textFilter()},
+        {dataField:'name',text:'Name',sort:true,filter: textFilter()},
         {dataField:'isDeleted',text:'isDeleted ',sort:true},
         
         {
@@ -167,6 +263,14 @@ const Applications = () => {
                 <div className="row">
                     <ApplicationsModal onClose={() => setIsOpen(false)} open={IsOpen}>Hello</ApplicationsModal>
                 </div>
+                <div className="row">
+                    <UpdateAppModal onClose={() => setIsOpenApp(false)} open={IsOpenApp} row={row}>Hello</UpdateAppModal>
+                </div>
+                <div className="row">
+                    <RoleModal onClose={() => setIsOpenRole(false)} open={IsOpenRole} row={row}>Hello</RoleModal>
+                </div>
+
+                
 
                 <div className="row">
                 
@@ -204,9 +308,29 @@ const Applications = () => {
                 </div>
             </DashboardWrapperMain>
             <DashboardWrapperRight>
-                <div className="title mb">Overall</div>
+                <div className="title mb">Roles</div>
+
                 <div className="mb">
-                    <OverallList />
+                    <button style={adduserbtn} type="button" onClick={() => { setShow(!show) }} className="btn btn-danger">New Role +</button>
+
+                    <input type="text" name="r" className="form-control" placeholder="Enter role"
+                        value={r}
+                        hidden={show}
+                        onChange={(e) => { setR(e.target.value) }}
+                    />
+
+                    <button hidden={show} style={adduserbtn} type="button" onClick={() => { addRole(); setShow(true) }} className="btn btn-danger">Add Role <AiOutlineSend /></button>
+
+                    <BootstrapTable
+                        pagination={paginator}
+                        bootstrap4
+                        keyField="_id"
+                        columns={columnsRole}
+                        data={rolestableData}
+                        filter={filterFactory()}
+                        cellEdit={cellEdit}
+
+                    />
                 </div>
                 <div className="title mb">Revenue by channel</div>
                 <div className="mb">
@@ -219,58 +343,4 @@ const Applications = () => {
 
 export default Applications
 
-const RevenueByMonthsChart = () => {
-    const chartOptions = {
-        responsive: true,
-        maintainAspectRatio: false,
-        scales: {
-            xAxes: {
-                grid: {
-                    display: false,
-                    drawBorder: false
-                }
-            },
-            yAxes: {
-                grid: {
-                    display: false,
-                    drawBorder: false
-                }
-            }
-        },
-        plugins: {
-            legend: {
-                display: false
-            },
-            title: {
-                display: false
-            }
-        },
-        elements: {
-            bar: {
-                backgroundColor: colors.orange,
-                borderRadius: 20,
-                borderSkipped: 'bottom'
-            }
-        }
-    }
 
-    const chartData = {
-        labels: data.revenueByMonths.labels,
-        datasets: [
-            {
-                label: 'Revenue',
-                data: data.revenueByMonths.data
-            }
-        ]
-    }
-    return (
-        <>
-            <div className="title mb">
-                Revenue by months
-            </div>
-            <div>
-                <Bar options={chartOptions} data={chartData} height={`300px`} />
-            </div>
-        </>
-    )
-}

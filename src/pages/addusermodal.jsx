@@ -201,10 +201,14 @@ const AddUserModal = ({ open, children, onClose }) => {
                         'Content-Type': 'application/json'
                     }
                 })
-                    .then(response => {
-                        setLoading(false);
-                    })
-                    .catch(error => {
+                .then(response => { onClose();setLoading(false);swal({
+                    position: 'top-end',
+                    icon: 'success',
+                    title: 'Your work has been saved',
+                    showConfirmButton: false,
+                    timer: 2500
+                  }) })
+                .catch(error => {
                         setLoading(false)
                         swal("Try Again!", "Unknown error has occurred!", "error");
 
@@ -310,21 +314,19 @@ const AddUserModal = ({ open, children, onClose }) => {
 
 
 
+
                     <select
-                        className="form-control"
+                        className="select-box"
 
                         onChange={(e) => { setAppid(e.target.value); }}
                     >
-                        <option defaultValue>Select </option>
+                        <option defaultValue>Choose App</option>
                         {tableData.map((item, index) => (
                             <option key={index} value={item._id}>
                                 {item.url}
                             </option>
                         ))}
                     </select>
-
-
-
 
 
                     <div hidden={!loading} className="loader">

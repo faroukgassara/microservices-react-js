@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react"
 import './usersmanagement.scss'
+
 import axios from 'axios';
 import React from 'react'
 import { Bar } from 'react-chartjs-2'
@@ -68,11 +69,7 @@ const UsersManagement = () => {
             });
     }, [])
 
-    const [selectedRowAction, setSelectedRowAction] = useState(null);
 
-    const handleActionsClick = selectedRowId => {
-        setSelectedRowAction(selectedRowId);
-    };
 
     function deleteUser(row) {
         console.log(row)
@@ -217,15 +214,41 @@ const UsersManagement = () => {
         afterSaveCell: onAfterSaveCell,
     });
 
+    const sizePerPageOptionRenderer = ({
+        text,
+        page,
+        onSizePerPageChange
+      }) => (
+        <li
+          key={ text }
+          role="presentation"
+          className="dropdown-item"
+        >
+          <a
+            href="#"
+            tabIndex="-1"
+            role="menuitem"
+            data-page={ page }
+            onMouseDown={ (e) => {
+              e.preventDefault();
+              onSizePerPageChange(page);
+            } }
+            style={ { color: 'red' } }
+          >
+            { text }
+          </a>
+        </li>
+      );
+
     const paginator = paginationFactory({
         page: 1,
-        sizePerPage: 5,
+        sizePerPage: 1,
         lastPageText: '>>',
         firstPageText: '<<',
         nextPageText: '>',
         prePageText: '<',
-        showTotal: true,
-        alwaysShowAllBtns: true,
+
+        sizePerPageOptionRenderer
     })
 
     const [IsOpen, setIsOpen] = useState(false)
@@ -261,9 +284,7 @@ const UsersManagement = () => {
                     <AddUserModal onClose={() => setIsOpen(false)} open={IsOpen}>Hello</AddUserModal>
                 </div>
                 
-                <div className="row">
-                    <RoleModal onClose={() => setIsOpenRole(false)} open={IsOpenRole} row={row}>Hello</RoleModal>
-                </div>
+                
 
                 <div className="row">
                     <div className="col-12">
@@ -283,30 +304,7 @@ const UsersManagement = () => {
                 </div>
             </DashboardWrapperMain>
             <DashboardWrapperRight>
-                <div className="title mb">Roles</div>
-
-                <div className="mb">
-                    <button style={adduserbtn} type="button" onClick={() => { setShow(!show) }} className="btn btn-danger">New Role +</button>
-
-                    <input type="text" name="r" className="form-control" placeholder="Enter role"
-                        value={r}
-                        hidden={show}
-                        onChange={(e) => { setR(e.target.value) }}
-                    />
-
-                    <button hidden={show} style={adduserbtn} type="button" onClick={() => { addRole(); setShow(true) }} className="btn btn-danger">Add Role <AiOutlineSend /></button>
-
-                    <BootstrapTable
-                        pagination={paginator}
-                        bootstrap4
-                        keyField="_id"
-                        columns={columnsRole}
-                        data={rolestableData}
-                        filter={filterFactory()}
-                        cellEdit={cellEdit}
-
-                    />
-                </div>
+                
                 <div className="title mb">Revenue by channel</div>
                 <div className="mb">
                     <RevenueList />

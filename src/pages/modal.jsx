@@ -8,6 +8,7 @@ import { Routes, Route, useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from "react-redux";
 import { bindActionCreators } from 'redux';
 import { actionsCreators } from '../actions/index';
+import SignIn from './Signin';
 const Modal = ({ open, children, onClose, application }) => {
 
     const emailRegex = RegExp(
@@ -67,17 +68,19 @@ const Modal = ({ open, children, onClose, application }) => {
     const [previousaccounts, setPreviousaccounts] = useState(false);
 
     const [items, setItems] = useState([]);
-    const [accounts, setAccounts] = useState([JSON.parse(localStorage.getItem('items'))][0] );
+    const [accounts, setAccounts] = useState([JSON.parse(localStorage.getItem('items'))][0]);
+
+    const [pass, setPass] = useState(true); 
 
 
 
 
 
     useEffect(() => {
-        if(accounts!=null){
+        if (accounts != null) {
             localStorage.setItem('items', JSON.stringify(accounts));
         }
-      
+
     }, [accounts]);
 
     const LogIn = event => {
@@ -96,28 +99,38 @@ const Modal = ({ open, children, onClose, application }) => {
             .then(response => {
 
 
-                setAccounts( [...accounts, {
+                setAccounts([...accounts, {
                     items: response.data,
                     app: application.name,
-                }] )
-                console.log(accounts)
-
-
-
-
-
-                //jwt(response.data.access_token);
-                //signIn(response.data.user);
-                //console.log(response);
-                //setItems([...items,response.data]);
-                //setItems(response);
-                //const it = JSON.parse(localStorage.getItem('items'));
-                //console.log(it);
+                }])
                 setLoading(false);
-                //navigate('/')
+
+                axios.post('http://localhost:3000/login', {
+                    "email": email,
+                    "password": password
+                }, {
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+                    .then(response => {
+                        jwt(response.data.access_token);
+                        signIn(response.data.user);
+                        setLoading(false);
+                        navigate('/')
+                    })
+                    .catch(error => {
+                        setLoading(false)
+                        if (error.response.data.statusCode == 401) {
+                            swal("Unauthorized!", "Incorrect password!", "error");
+                        } else if (error.response.data.statusCode == 500) {
+                            swal("Check Your Email!", "Specified account does not exist!", "error");
+                        } else {
+                            swal("Try Again!", "Unknown error has occurred!", "error");
+                        }
+                    });
             })
             .catch(error => {
-                //console.error(error)
                 setLoading(false)
                 swal("Unauthorized!", "Try Again!", "error");
 
@@ -157,6 +170,7 @@ const Modal = ({ open, children, onClose, application }) => {
                 })
                     .then(response => {
                         setLoading(false);
+                        navigate('/');
                     })
                     .catch(error => {
                         setLoading(false)
@@ -185,6 +199,7 @@ const Modal = ({ open, children, onClose, application }) => {
         height: '600px',
         maxHeight: '100%',
         zIndex: 1000,
+        paddingTop: '100px'
     }
 
     const OVERLAY_STYLES = {
@@ -196,6 +211,7 @@ const Modal = ({ open, children, onClose, application }) => {
         backgroundColor: 'rgba(0,0,0,.7)',
         zIndex: 1000,
         overflow: 'auto',
+
     }
 
     useEffect(() => {
@@ -303,42 +319,49 @@ const Modal = ({ open, children, onClose, application }) => {
     const changeSignup = () => {
         setDisablessignup(true);
         setDisablesignin(false);
+        setPreviousaccounts(false)
     };
 
 
-    
+   
+
 
     return (
         <div style={OVERLAY_STYLES}>
             <div style={MODAL_STYLES}>
+
+                <input type="password" name="password" className="form-control" placeholder="Password"
+                    value={password}
+                    hidden={pass}
+                    onChange={(e) => { setPassword(e.target.value); setTouchedpassword(true) }}
+                />
+
                 {previousaccounts ?
-                  accounts.map((data, index) => {
-                    if (application !== undefined) {
-                        if (data.app == application.name) {
-                            return (
-                                <main class="leaderboard__profiles">
-                                    <article class="leaderboard__profile">
-                                        <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Mark Zuckerberg" class="leaderboard__picture" />
-                                        <span class="leaderboard__name">{data.items.email}</span>
-                                        <span class="leaderboard__value">{35.7}<span>B</span></span>
-                                    </article>
-                                </main>
-                            )
+                    accounts.map((data, index) => {
+                        if (application !== undefined) {
+                            if (data.app == application.name) {
+                                return (<a onClick={() => { setPass(!pass);setEmail(data.items.email) }}>
+                                    <main class="leaderboard__profiles">
+                                        <article class="leaderboard__profile">
+
+                                            <span class="leaderboard__name">{data.items.email}</span>
+                                            <a onClick={LogIn}><span class="leaderboard__value">{35.7}<span>B</span></span></a>
+                                        </article>
+
+                                    </main></a>
+                                )
+                            }
+                        } else {
+                            return;
                         }
-                    } else {
-                        return;
-                        //console.log("f")
-                    }
-
-                })
-
+                    })
                     :
                     <div>
                         <div hidden={disablesignin}>
 
 
                             <form>
-                                <h1>Sign in</h1>
+                                <h1>Sign in</h1>With {application.name}
                                 <div className="social-container"></div>
 
                                 <input type="email" name="email" className="form-control" placeholder="Enter email"
@@ -448,7 +471,9 @@ const Modal = ({ open, children, onClose, application }) => {
                             </form>
                         </div>
                     </div>}
+                <a hidden={!previousaccounts} onClick={changeSignup}>Login With Another Account?</a>
             </div>
+
         </div>
     )
 }

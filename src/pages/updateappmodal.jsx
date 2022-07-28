@@ -8,7 +8,10 @@ import { Routes, Route, useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from "react-redux";
 import { bindActionCreators } from 'redux';
 import { actionsCreators } from '../actions/index';
-const ApplicationsModal = ({ open, children, onClose }) => {
+const UpdateAppModal = ({ open, children, onClose,row }) => {
+
+    const [url, setUrl] = useState("");
+    //useEffect(() => { setUrl(row.name)}, [row.name] )
 
     const emailRegex = RegExp(
         /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
@@ -51,13 +54,16 @@ const ApplicationsModal = ({ open, children, onClose }) => {
         overflow: 'auto',
     }
 
-    const [url, setUrl] = useState("");
+    
+    
     const [name, setName] = useState("");
     const [loading, setLoading] = useState(false);
     const [touchedurl, setTouchedurl] = useState(false);
     const [touchedname, setTouchedname] = useState(false);
     const [disableerrorurl, setDisableerrorurl] = useState(true);
     const [disableerrorname, setDisableerrorname] = useState(true);
+    
+
 
     useEffect(() => {
 
@@ -74,6 +80,7 @@ const ApplicationsModal = ({ open, children, onClose }) => {
         }
     })
 
+
     const AddApp = event => {
         event.preventDefault()
         setLoading(true)
@@ -87,13 +94,7 @@ const ApplicationsModal = ({ open, children, onClose }) => {
                 'Content-Type': 'application/json'
             }
         })
-        .then(response => {onClose();swal({
-            position: 'top-end',
-            icon: 'success',
-            title: 'Your work has been saved',
-            showConfirmButton: false,
-            timer: 2500
-          });setLoading(false);onClose();console.log("response.data")})
+        .then(response => {setLoading(false);onClose();console.log("response.data")})
         .catch(error => {
             setLoading(false)
             swal("Try Again!", "Name or Url Already Exist!", "error");
@@ -113,17 +114,17 @@ const ApplicationsModal = ({ open, children, onClose }) => {
         <div style={OVERLAY_STYLES}>
             <div style={MODAL_STYLES}>
                 <form>
-                    <h1>New Application</h1>
+                    <h1>New Application {row.name}</h1>
                     <div className="social-container"></div>
 
-                    <input type="url" name="url" className="form-control" placeholder="Enter url"
+                    <input type="url" name="url" className="form-control" placeholder={row.url}
                         value={url}
                         onChange={(e) => { setUrl(e.target.value); setTouchedurl(true); }}
                        
                     />
                     <span className="left-side" hidden={disableerrorurl}>enter a valid url</span>
 
-                    <input type="name" name="name" className="form-control" placeholder="Enter name"
+                    <input type="name" name="name" className="form-control" placeholder={row.name}
                         value={name}
                         onChange={(e) => { setName(e.target.value); setTouchedname(true); }}
                         
@@ -145,4 +146,4 @@ const ApplicationsModal = ({ open, children, onClose }) => {
         </div>
     )
 }
-export default ApplicationsModal
+export default UpdateAppModal

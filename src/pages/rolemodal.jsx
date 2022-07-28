@@ -13,15 +13,17 @@ const RoleModal = ({ open, children, onClose ,row}) => {
 
     const MODAL_STYLES = {
         position: 'fixed',
-        top: '-25%',
+        //top: '20%',
         left: '50%',
         transform: 'translate(-50%,+50%)',
         backgroundColor: '#FFF',
-        width: '600px',
+        width: '700px',
         maxWidth: '100%',
-        height: '600px',
+        height: '400px',
         maxHeight: '100%',
         zIndex: 1000,
+        paddingTop:'5%'
+        
     }
 
     const OVERLAY_STYLES = {
@@ -33,6 +35,7 @@ const RoleModal = ({ open, children, onClose ,row}) => {
         backgroundColor: 'rgba(0,0,0,.7)',
         zIndex: 1000,
         overflow: 'auto',
+        
     }
 
     const [loading, setLoading] = useState(false);
@@ -63,14 +66,23 @@ const RoleModal = ({ open, children, onClose ,row}) => {
             "_id": row._id,
             "_idRole": roleid,
         });
-        axios.post('http://localhost:3000/users/AffectRoleToUser', usertoRole, {
+        axios.post('http://localhost:3000/applications/AffectRoleToApp', usertoRole, {
             headers: {
                 'Content-Type': 'application/json'
             }
         })
-            .then(response => { setLoading(false) })
+            .then(response => { onClose();setLoading(false);swal({
+                position: 'top-end',
+                icon: 'success',
+                title: 'Your work has been saved',
+                showConfirmButton: false,
+                timer: 2500
+              }) })
             .catch(error => {
-                console.error(error)
+                setLoading(false);
+                console.log(error)
+                
+                swal("Try Again!", "Unknown error has occurred!", "error");
             });
     }
 
@@ -115,13 +127,13 @@ const RoleModal = ({ open, children, onClose ,row}) => {
                         </div>
 
                         <button  onClick={affectRoleToUser}>Confirm</button>
-                        <a onClick={changeSignin}>Create Account?</a>
+                        <a onClick={changeSignin}>Remove Role From User?</a>
                     </form>
                 </div>
 
                 <div hidden={disablessignup}>
                     <form>
-                    <a onClick={changeSignup}>Login With Your Account?</a>
+                    <a onClick={changeSignup}>Add Role To User?</a>
                     </form>
                 </div>
 
