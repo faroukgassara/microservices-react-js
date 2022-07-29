@@ -8,7 +8,8 @@ import { Routes, Route, useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from "react-redux";
 import { bindActionCreators } from 'redux';
 import { actionsCreators } from '../actions/index';
-const RoleModal = ({ open, children, onClose ,row}) => {
+import { AiFillDelete, AiFillEdit, AiOutlineSend } from "react-icons/ai";
+const RoleModal = ({ open, children, onClose, row }) => {
 
 
     const MODAL_STYLES = {
@@ -22,8 +23,8 @@ const RoleModal = ({ open, children, onClose ,row}) => {
         height: '400px',
         maxHeight: '100%',
         zIndex: 1000,
-        paddingTop:'5%'
-        
+        paddingTop: '5%'
+
     }
 
     const OVERLAY_STYLES = {
@@ -35,7 +36,7 @@ const RoleModal = ({ open, children, onClose ,row}) => {
         backgroundColor: 'rgba(0,0,0,.7)',
         zIndex: 1000,
         overflow: 'auto',
-        
+
     }
 
     const [loading, setLoading] = useState(false);
@@ -57,7 +58,7 @@ const RoleModal = ({ open, children, onClose ,row}) => {
     if (!open) { return null }
 
 
-    
+
 
     const affectRoleToUser = event => {
         event.preventDefault()
@@ -71,17 +72,19 @@ const RoleModal = ({ open, children, onClose ,row}) => {
                 'Content-Type': 'application/json'
             }
         })
-            .then(response => { onClose();setLoading(false);swal({
-                position: 'top-end',
-                icon: 'success',
-                title: 'Your work has been saved',
-                showConfirmButton: false,
-                timer: 2500
-              }) })
+            .then(response => {
+                onClose(); setLoading(false); swal({
+                    position: 'top-end',
+                    icon: 'success',
+                    title: 'Your work has been saved',
+                    showConfirmButton: false,
+                    timer: 2500
+                })
+            })
             .catch(error => {
                 setLoading(false);
                 console.log(error)
-                
+
                 swal("Try Again!", "Unknown error has occurred!", "error");
             });
     }
@@ -90,7 +93,12 @@ const RoleModal = ({ open, children, onClose ,row}) => {
     const changeSignin = () => {
         setDisablesignin(true);
         setDisablessignup(false);
+    };
 
+    const deleteBtnStyle = {
+        backgroundColor: '#f44336',
+        padding: '10px',
+        margin: '2px',
     };
 
     const changeSignup = () => {
@@ -98,12 +106,41 @@ const RoleModal = ({ open, children, onClose ,row}) => {
         setDisablesignin(false);
     };
 
+    function deleteRole (_idRole) {
+        setLoading(true)
+        const usertoRole = JSON.stringify({
+            "_id": row._id,
+            "_idRole": _idRole
+            ,
+        });
+        axios.post('http://localhost:3000/applications/DeleteRoleFromApp', usertoRole, {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(response => {
+                onClose(); setLoading(false); swal({
+                    position: 'top-end',
+                    icon: 'success',
+                    title: 'Your work has been saved',
+                    showConfirmButton: false,
+                    timer: 2500
+                })
+            })
+            .catch(error => {
+                setLoading(false);
+                console.log(error)
+
+                swal("Try Again!", "Unknown error has occurred!", "error");
+            });
+    };
+
 
     return (
         <div style={OVERLAY_STYLES}>
             <div style={MODAL_STYLES}>
                 <div hidden={disablesignin}>
-                    
+
                     <form>
                         <select
                             className="select-box"
@@ -126,14 +163,41 @@ const RoleModal = ({ open, children, onClose ,row}) => {
                             <span></span>
                         </div>
 
-                        <button  onClick={affectRoleToUser}>Confirm</button>
+                        <button onClick={affectRoleToUser}>Confirm</button>
                         <a onClick={changeSignin}>Remove Role From User?</a>
                     </form>
                 </div>
 
                 <div hidden={disablessignup}>
-                    <form>
-                    <a onClick={changeSignup}>Add Role To User?</a>
+                    <form className='area'>
+
+                        <table cellPadding="0" cellSpacing="0">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                {row.roles.map(role =>
+                                    <tr>
+                                        <td>{role.name}</td>
+                                        <td>
+                                            <div className="row">
+
+                                                <button style={deleteBtnStyle} onClick={() => deleteRole(role._id)} type="button" className="btn btn-danger"> <AiFillDelete /></button>
+
+                                            </div>
+                                        </td>
+                                    </tr>
+                                )}
+                            </tbody>
+                        </table>
+
+
+
+                        <a onClick={changeSignup}>Add Role To User?</a>
                     </form>
                 </div>
 

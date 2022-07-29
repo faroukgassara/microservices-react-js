@@ -61,7 +61,8 @@ const AddUserModal = ({ open, children, onClose }) => {
     const [touchedlastname, setTouchedlastname] = useState(false);
     const [touchedconfirmpassword, setTouchedconfirmpassword] = useState(false);
 
-    const [applications, setApplications] = useState([])
+    const [applications, setApplications] = useState([]);
+    
     const [IsOpen, setIsOpen] = useState(false)
     const [users, setUsers] = useState([])
     const [previousaccounts, setPreviousaccounts] = useState(false);
@@ -377,6 +378,8 @@ const AddUserModal = ({ open, children, onClose }) => {
                             </option>
                         ))}
                     </select>
+
+
 
 
                     <div hidden={!loading} className="loader">

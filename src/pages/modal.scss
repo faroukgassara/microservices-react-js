@@ -1,3 +1,10 @@
+.area {
+  padding: 1rem;
+  background: white;
+  height: 250px;
+  overflow: auto;
+}
+
 .select-box {
   position: relative;
   display: block;
@@ -80,11 +87,6 @@
     padding: 0;
     list-style: none;
     opacity: 0;
-    
-    // We need to use animation with delay.
-    // Otherwise the click event will not have time to run on label, because this element disapears immediately when .select-box__current element loses the focus.
-    // This delay will not be noticed because we set "opacity" to "0".
-    // We also use "animation-fill-mode: forwards" to make the list stay hidden.
     
     animation-name: HideList;
     animation-duration: 0.5s;
@@ -225,14 +227,7 @@
       }
     }
   }
-  
-  
-  
-  
-  // bare minimuu styles
-  
 
-  
   .leaderboard {
     box-shadow: 0 0 40px -10px rgba(0, 0, 0, .4);
   }

@@ -165,6 +165,7 @@ const UpdateUserModal = ({ open, children, onClose, row }) => {
         overflow: 'auto',
     }
 
+    const [role, setRole] = useState([])
 
     const [checked, setChecked] = useState(false);
     const toggleChecked = () => setChecked(value => !value);
@@ -186,7 +187,8 @@ const UpdateUserModal = ({ open, children, onClose, row }) => {
             "locked": checked,
             "enabled": checkedd,
             "picture": "efef",
-            "phone": Number(phone)
+            "phone": Number(phone),
+            "role":role,
         });
         axios.put('http://localhost:3000/users/' + row._id, user, {
             headers: {
@@ -318,6 +320,26 @@ const UpdateUserModal = ({ open, children, onClose, row }) => {
                             <span className="left-side" hidden={disableerrorphone}>enter a phone number</span>
                         </div>
                     </div>
+
+                    
+                    <select
+                        className="select-box"
+
+                        onChange={(e) => { setRole(e.target.value); }}
+                    >
+                        <option defaultValue>Choose Role</option>
+                        
+                            <option  value="USER">
+                                USER
+                            </option>
+                            <option  value="ADMIN">
+                                ADMIN
+                            </option>
+                            <option  value="SUPERADMIN">
+                                SUPER ADMIN
+                            </option>
+                    
+                    </select>
 
 
 

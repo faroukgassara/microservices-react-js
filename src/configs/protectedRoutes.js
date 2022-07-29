@@ -10,5 +10,4 @@ const ProtectedRoutes = ({jwt,children}) => {
 }
 
 
-
 export default ProtectedRoutes;

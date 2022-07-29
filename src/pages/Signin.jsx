@@ -9,6 +9,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { bindActionCreators } from 'redux';
 import { actionsCreators } from '../actions/index';
 import Modal from './modal';
+import ReCAPTCHA from 'react-google-recaptcha';
 const SignIn = () => {
 
     const state = useSelector((state) => state);
@@ -219,6 +220,12 @@ const SignIn = () => {
         }
     });
 
+    const [captcha, setcaptcha] = useState(true)
+
+    function onChange(value) {
+        setcaptcha(false)
+    }
+
     return (
         <div className="container cont" id="container">
             <Modal onClose={() => setIsOpen(false)} open={IsOpen} application={application}>Hello</Modal>
@@ -341,6 +348,12 @@ const SignIn = () => {
                     <span className="left-side" hidden={disableerrorpassword}>enter a password</span>
 
                     <a href="/forgotpassword">Forgot your password?</a>
+
+                    <ReCAPTCHA
+                        sitekey="6LfZyCwhAAAAADxqFnNejf5L8Ro54zqn1U2fs9dl"
+                        onChange={onChange}
+                    />
+
                     <div hidden={!loading} className="loader">
                         <span></span>
                         <span></span>
@@ -349,7 +362,8 @@ const SignIn = () => {
                         <span></span>
                         <span></span>
                     </div>
-                    <button hidden={disablelogin} onClick={LogIn}>Sign In</button>
+
+                    <button disabled={captcha} hidden={disablelogin} onClick={LogIn}>Sign In</button>
                 </form>
             </div>
             <div className="overlay-container">
