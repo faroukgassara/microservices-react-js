@@ -23,7 +23,7 @@ const RoleModal = ({ open, children, onClose, row }) => {
         height: '400px',
         maxHeight: '100%',
         zIndex: 1000,
-        paddingTop: '5%'
+        paddingTop: '2%'
 
     }
 
@@ -119,7 +119,9 @@ const RoleModal = ({ open, children, onClose, row }) => {
             }
         })
             .then(response => {
-                onClose(); setLoading(false); swal({
+                onClose(); 
+                setLoading(false); 
+                swal({
                     position: 'top-end',
                     icon: 'success',
                     title: 'Your work has been saved',
@@ -138,7 +140,7 @@ const RoleModal = ({ open, children, onClose, row }) => {
 
     return (
         <div style={OVERLAY_STYLES}>
-            <div style={MODAL_STYLES}>
+            <div className='area' style={MODAL_STYLES}>
                 <div hidden={disablesignin}>
 
                     <form>
@@ -164,14 +166,15 @@ const RoleModal = ({ open, children, onClose, row }) => {
                         </div>
 
                         <button onClick={affectRoleToUser}>Confirm</button>
-                        <a onClick={changeSignin}>Remove Role From User?</a>
+                        <a onClick={changeSignin}>Remove Role From Application?</a>
                     </form>
                 </div>
 
-                <div hidden={disablessignup}>
-                    <form className='area'>
+                <div  hidden={disablessignup}>
+                    <form >
+                        <h1>the roles assigned to : {row.name}</h1>
 
-                        <table cellPadding="0" cellSpacing="0">
+                        <table  cellPadding="0" cellSpacing="0">
                             <thead>
                                 <tr>
                                     <th>Name</th>
@@ -179,7 +182,7 @@ const RoleModal = ({ open, children, onClose, row }) => {
                                 </tr>
                             </thead>
 
-                            <tbody>
+                            <tbody >
                                 {row.roles.map(role =>
                                     <tr>
                                         <td>{role.name}</td>
@@ -197,7 +200,7 @@ const RoleModal = ({ open, children, onClose, row }) => {
 
 
 
-                        <a onClick={changeSignup}>Add Role To User?</a>
+                        <a onClick={changeSignup}>Add Role To Application?</a>
                     </form>
                 </div>
 

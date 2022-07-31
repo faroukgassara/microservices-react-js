@@ -62,7 +62,7 @@ const Applications = () => {
         .catch(error => {
             console.error(error)
         });
-    })
+    },[tableData])
 
     
     useEffect(() => {
@@ -71,7 +71,7 @@ const Applications = () => {
             .catch(error => {
                 console.error(error)
             });
-    }, [])
+    },[rolestableData])
 
     const onAfterSaveCell = (value, name, row) => {
         if (value !== name) {
@@ -176,13 +176,7 @@ const Applications = () => {
                 swal("Try Again!", "Unknown error has occurred!", "error");
             });
         }
-        
-
     }
-
-
-
-
 
     const deleteBtnStyle = {
         backgroundColor: '#f44336',
@@ -214,8 +208,6 @@ const Applications = () => {
         margin: '10px',
     };
 
-    
-
     const actionsFormatter = (cell, row, rowIndex, formatExtraData) => {
         return (
             <div className="row">
@@ -235,22 +227,18 @@ const Applications = () => {
         {dataField:'url',text:'Url',sort:true,filter: textFilter()},
         {dataField:'name',text:'Name',sort:true,filter: textFilter()},
         {dataField:'isDeleted',text:'isDeleted ',sort:true},
-        
         {
             dataField: "actions",
             text: "Actions",
             formatter: actionsFormatter
         }
-
     ]
-
 
     const PaginationBtntyle = {
         backgroundColor: '#4CAF50',
         padding: '10px',
         margin: '2px',
     };
-
 
     const sizePerPageRenderer = ({
         options,
@@ -303,9 +291,23 @@ const Applications = () => {
                     <RoleModal onClose={() => setIsOpenRole(false)} open={IsOpenRole} row={row}>Hello</RoleModal>
                 </div>
 
-                
-
                 <div className="row">
+                    <div className="col-12">
+                        <Box>
+                        <button style={addappbtn} type="button" onClick={() => {  setIsOpen(true) }} className="btn btn-danger">Add Application <AiOutlineSend /></button>
+                            <BootstrapTable
+                                pagination={paginator}
+                                bootstrap4
+                                keyField="_id"
+                                columns={columns}
+                                data={tableData}
+                                filter={ filterFactory() }
+                            />
+
+                        </Box>
+                    </div>
+                </div>
+                <div hidden={true} className="row">
                 
                     <div className="col-8 col-md-12">
                         <div className="row">
@@ -320,23 +322,6 @@ const Applications = () => {
                     </div>
                     <div className="col-4 hide-md">
                         <SummaryBoxSpecial item={data.revenueSummary} />
-                    </div>
-                </div>
-                <div className="row">
-                    <div className="col-12">
-                        <Box>
-                        <button style={addappbtn} type="button" onClick={() => {  setIsOpen(true) }} className="btn btn-danger">Add Application <AiOutlineSend /></button>
-                            <BootstrapTable
-                                pagination={paginator}
-                                bootstrap4
-                                keyField="_id"
-                                columns={columns}
-                                data={tableData}
-                                filter={ filterFactory() }
-                            />
-
-                        
-                        </Box>
                     </div>
                 </div>
             </DashboardWrapperMain>
@@ -365,10 +350,10 @@ const Applications = () => {
 
                     />
                 </div>
-                <div className="title mb">Revenue by channel</div>
+                {/*<div className="title mb">Revenue by channel</div>
                 <div className="mb">
                     <RevenueList />
-                </div>
+                </div>*/}
             </DashboardWrapperRight>
         </DashboardWrapper>
     )

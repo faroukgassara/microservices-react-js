@@ -61,7 +61,7 @@ const UsersManagement = () => {
             .catch(error => {
                 console.error(error)
             });
-    }, [])
+    },[rolestableData])
 
     useEffect(() => {
         axios.get('http://localhost:3000/users')
@@ -69,7 +69,7 @@ const UsersManagement = () => {
             .catch(error => {
                 console.error(error)
             });
-    }, [])
+    },[tableData])
 
 
 
@@ -175,7 +175,7 @@ const UsersManagement = () => {
         { dataField: 'cin', text: 'CIN', sort: true, filter: textFilter() },
         { dataField: 'phone', text: 'Phone', sort: true, filter: textFilter() },
         { dataField: 'enabled', text: 'Enabled ', sort: true },
-        { dataField: 'locked', text: 'Locked ', sort: true },
+        //{ dataField: 'locked', text: 'Locked ', sort: true },
         {
             dataField: "actions",
             text: "Actions",
@@ -295,8 +295,6 @@ const UsersManagement = () => {
                 <div className="row">
                     <UpdateUserModal onClose={() => setIsOpenUpdate(false)} open={IsOpenUpdate} row={row}>Hello</UpdateUserModal>
                 </div>
-                
-                
 
                 <div className="row">
                     <div className="col-12">
@@ -317,10 +315,10 @@ const UsersManagement = () => {
             </DashboardWrapperMain>
             <DashboardWrapperRight>
                 
-                <div className="title mb">Revenue by channel</div>
+             {/*<div className="title mb">Revenue by channel</div>
                 <div className="mb">
                     <RevenueList />
-                </div>
+                </div>*/}
             </DashboardWrapperRight>
         </DashboardWrapper>
     )
