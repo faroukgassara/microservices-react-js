@@ -5,6 +5,7 @@ import logo from '../assets/images/f.png';
 import logof from '../assets/images/ff.png';
 import swal from 'sweetalert';
 import {Routes, Route, useNavigate} from 'react-router-dom';
+import { API_URL } from '../constants/apiUrl';
 const ForgotPassword = () => {
 
     const emailRegex = RegExp(
@@ -21,7 +22,7 @@ const ForgotPassword = () => {
     const Send = event => {
         event.preventDefault()
         setLoading(true)
-        axios.post('http://localhost:3000/users/forgotpassword/'+email)
+        axios.post(API_URL+'users/forgotpassword/'+email)
         .then(response =>{navigate('/auth');setLoading(false);})
         .catch(error => {
             setLoading(false)

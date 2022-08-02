@@ -6,6 +6,8 @@ import logo from '../assets/images/r.png';
 import logor from '../assets/images/rr.png';
 import swal from 'sweetalert';
 import {Routes, Route, useNavigate} from 'react-router-dom';
+import { API_URL } from '../constants/apiUrl';
+
 const ResetPassword = () => {
 
     const [password, setPassword] = useState("");
@@ -27,7 +29,7 @@ const ResetPassword = () => {
         const pass = JSON.stringify({
             "password" : password
         });
-        axios.post('http://localhost:3000/users/resetpassword/'+params.email+'/'+params.token,pass, {
+        axios.post(API_URL+'users/resetpassword/'+params.email+'/'+params.token,pass, {
             headers: {
               'Content-Type': 'application/json'
             }

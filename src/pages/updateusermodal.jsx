@@ -9,6 +9,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { bindActionCreators } from 'redux';
 import { actionsCreators } from '../actions/index';
 import { Select } from '@material-ui/core';
+import { API_URL } from '../constants/apiUrl';
 const UpdateUserModal = ({ open, children, onClose, row }) => {
 
     const emailRegex = RegExp(
@@ -190,7 +191,7 @@ const UpdateUserModal = ({ open, children, onClose, row }) => {
             "phone": Number(phone),
             "role":role,
         });
-        axios.put('http://localhost:3000/users/' + row._id, user, {
+        axios.put(API_URL+'users/' + row._id, user, {
             headers: {
                 'Content-Type': 'application/json'
             }
@@ -215,10 +216,6 @@ const UpdateUserModal = ({ open, children, onClose, row }) => {
             });
     }
 
-
-    const [disablesignin, setDisablesignin] = useState(false);
-    const [disablessignup, setDisablessignup] = useState(true);
-    const [app_id, setAppid] = useState("");
 
 
     if (!open) { return null }

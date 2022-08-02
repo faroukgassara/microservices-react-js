@@ -9,6 +9,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { bindActionCreators } from 'redux';
 import { actionsCreators } from '../actions/index';
 import { AiFillDelete, AiFillEdit, AiOutlineSend } from "react-icons/ai";
+import { API_URL } from '../constants/apiUrl';
 const RoleModal = ({ open, children, onClose, row }) => {
 
 
@@ -46,12 +47,12 @@ const RoleModal = ({ open, children, onClose, row }) => {
     const [disablessignup, setDisablessignup] = useState(true);
 
     useEffect(() => {
-        axios.get('http://localhost:3000/roles')
+        axios.get(API_URL+'roles')
             .then(response => { setRolesTableData(response.data) })
             .catch(error => {
                 console.error(error)
             });
-    }, [])
+    }, [rolestableData])
 
     const [roleid, setRoleid] = useState("")
 
@@ -67,7 +68,7 @@ const RoleModal = ({ open, children, onClose, row }) => {
             "_id": row._id,
             "_idRole": roleid,
         });
-        axios.post('http://localhost:3000/applications/AffectRoleToApp', usertoRole, {
+        axios.post(API_URL+'applications/AffectRoleToApp', usertoRole, {
             headers: {
                 'Content-Type': 'application/json'
             }
@@ -113,7 +114,7 @@ const RoleModal = ({ open, children, onClose, row }) => {
             "_idRole": _idRole
             ,
         });
-        axios.post('http://localhost:3000/applications/DeleteRoleFromApp', usertoRole, {
+        axios.post(API_URL+'applications/DeleteRoleFromApp', usertoRole, {
             headers: {
                 'Content-Type': 'application/json'
             }

@@ -1,25 +1,14 @@
 import { useEffect, useState } from "react"
 import './usersmanagement.scss'
-
 import axios from 'axios';
 import React from 'react'
 import { Bar } from 'react-chartjs-2'
 import Box from '../components/box/Box'
 import DashboardWrapper, { DashboardWrapperMain, DashboardWrapperRight } from '../components/dashboard-wrapper/DashboardWrapper'
-import SummaryBox, { SummaryBoxSpecial } from '../components/summary-box/SummaryBox'
-import { colors, data } from '../constants'
-
-
 import BootstrapTable from 'react-bootstrap-table-next';
-//import 'bootstrap/dist/css/bootstrap.min.css'
-//import 'react-bootstrap-table-next/dist/react-bootstrap-table2.css'
-
 import paginationFactory from "react-bootstrap-table2-paginator";
-//import 'react-bootstrap-table2-paginator/dist/react-bootstrap-table2-paginator.min.css'
-
+import { API_URL } from '../constants/apiUrl';
 import filterFactory, { textFilter } from 'react-bootstrap-table2-filter';
-//import 'react-bootstrap-table2-filter/dist/react-bootstrap-table2-filter.min.css'
-import cellEditFactory from 'react-bootstrap-table2-editor';
 import {
     Chart as ChartJS,
     CategoryScale,
@@ -29,16 +18,17 @@ import {
     Title,
     Tooltip,
     Legend
-} from 'chart.js'
-import OverallList from '../components/overall-list/OverallList'
-import RevenueList from '../components/revenue-list/RevenueList'
-
-
+} from 'chart.js';
+import 'react-bootstrap-table-next/dist/react-bootstrap-table2.css';
 import { AiFillDelete, AiFillEdit, AiOutlineSend } from "react-icons/ai";
 import AddUserModal from "./addusermodal";
-import RoleModal from "./rolemodal";
 import UpdateAppModal from "./updateappmodal";
 import UpdateUserModal from "./updateusermodal";
+import UserAppModal from "./userappModal";
+
+
+//import 'bootstrap/dist/css/bootstrap.min.css'
+
 ChartJS.register(
     CategoryScale,
     LinearScale,
@@ -50,41 +40,22 @@ ChartJS.register(
 )
 
 
+
 const UsersManagement = () => {
 
     const [tableData, setTableData] = useState([])
-    const [rolestableData, setRolesTableData] = useState([])
 
     useEffect(() => {
-        axios.get('http://localhost:3000/roles')
-            .then(response => { setRolesTableData(response.data) })
-            .catch(error => {
-                console.error(error)
-            });
-    },[rolestableData])
-
-    useEffect(() => {
-        axios.get('http://localhost:3000/users')
+        axios.get(API_URL + 'users')
             .then(response => { setTableData(response.data) })
             .catch(error => {
                 console.error(error)
             });
-    },[tableData])
-
-
+    }, [tableData])
 
     function deleteUser(row) {
         console.log(row)
-        axios.delete('http://localhost:3000/users/' + row._id)
-            .then(response => { console.log("response.data") })
-            .catch(error => {
-                console.error(error)
-            });
-    }
-
-    function editUser(row) {
-        console.log(row)
-        axios.delete('http://localhost:3000/users/' + row._id)
+        axios.delete(API_URL + 'users/' + row._id)
             .then(response => { console.log("response.data") })
             .catch(error => {
                 console.error(error)
@@ -105,8 +76,8 @@ const UsersManagement = () => {
 
     const PaginationBtntyle = {
         backgroundColor: '#4CAF50',
-        padding: '10px',
-        margin: '2px',
+        padding: '6px',
+        margin: '1px',
     };
 
     const sendBtnstyle = {
@@ -121,27 +92,16 @@ const UsersManagement = () => {
         margin: '10px',
     };
 
-    const editRoleBtntyle = {
-        backgroundColor: '#4CAF50',
-        padding: '10px',
-        margin: '1px',
-    };
-
-    const deleteRoleBtnstyle = {
-        backgroundColor: '#f44336',
-        padding: '10px',
-        margin: '1px',
-    };
 
     const [row, setRow] = useState("");
     const actionsFormatter = (cell, row, rowIndex, formatExtraData) => {
         return (
             <div className="row">
 
-                <button style={sendBtnstyle} onClick={() =>{ setIsOpenRole(true);setRow(row)}} type="button" className="btn btn-danger"> <AiOutlineSend /></button>
+                <button style={sendBtnstyle} onClick={() => { setIsOpenApp(true); setRow(row) }} type="button" className="btn btn-danger"> <AiOutlineSend /></button>
 
 
-                <button style={editBtntyle} onClick={() => {setIsOpenUpdate(true);setRow(row)} }type="button" className="btn btn-danger"> <AiFillEdit /></button>
+                <button style={editBtntyle} onClick={() => { setIsOpenUpdate(true); setRow(row) }} type="button" className="btn btn-danger"> <AiFillEdit /></button>
 
                 <button style={deleteBtnStyle} onClick={() => deleteUser(row)} type="button" className="btn btn-danger"> <AiFillDelete /></button>
 
@@ -149,23 +109,6 @@ const UsersManagement = () => {
         );
     };
 
-    function deleteRole(row) {
-        console.log(row)
-        axios.delete('http://localhost:3000/roles/' + row._id)
-            .then(response => { console.log("response.data") })
-            .catch(error => {
-                console.error(error)
-            });
-    }
-
-    const actionsrolesFormatter = (cell, row, rowIndex, formatExtraData) => {
-        return (
-            <div >
-                <button style={deleteRoleBtnstyle} onClick={() => deleteRole(row)} type="button" className="btn btn-danger"> <AiFillDelete /></button>
-
-            </div>
-        );
-    };
 
     const columns = [
         { dataField: 'email', text: 'Email', sort: true, filter: textFilter() },
@@ -175,81 +118,44 @@ const UsersManagement = () => {
         { dataField: 'cin', text: 'CIN', sort: true, filter: textFilter() },
         { dataField: 'phone', text: 'Phone', sort: true, filter: textFilter() },
         { dataField: 'enabled', text: 'Enabled ', sort: true },
-        //{ dataField: 'locked', text: 'Locked ', sort: true },
+        { dataField: 'locked', text: 'Locked ', sort: true },
         {
             dataField: "actions",
             text: "Actions",
-            formatter:actionsFormatter
+            formatter: actionsFormatter
 
         }
 
     ]
-
-    const columnsRole = [
-        {
-            dataField: 'name', text: 'Name', sort: true, filter: textFilter(),
-        },
-        {
-            dataField: "actions",
-            text: "Actions",
-            formatter: actionsrolesFormatter
-        }
-    ]
-
-    const onAfterSaveCell = (value, name, row) => {
-        if (value !== name) {
-            if (window.confirm('Do you want to accep this change?')) {
-                const roles = JSON.stringify({
-                    "_id": row._id,
-                    "name": row.name,
-                });
-                axios.put('http://localhost:3000/roles/' + row._id, roles, {
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
-                })
-                    .then(response => { console.log("response.data") })
-                    .catch(error => {
-                        console.error(error)
-                    });
-            }
-        }
-    };
-
-    const cellEdit = cellEditFactory({
-        mode: 'dbclick',
-        blurToSave: true,
-        afterSaveCell: onAfterSaveCell,
-    });
 
     const sizePerPageRenderer = ({
         options,
         currSizePerPage,
         onSizePerPageChange
-      }) => (
-        <div  role="group">
-          {
-            options.map((option) => {
-              const isSelect = currSizePerPage === `${option.page}`;
-              return (
-                <button
-                  key={ option.text }
-                  type="button"
-                  onClick={ () => onSizePerPageChange(option.page) }
-                 style={PaginationBtntyle}
-                >
-                  { option.text }
-                </button>
-              );
-            })
-          }
+    }) => (
+        <div role="group">
+            {
+                options.map((option) => {
+                    const isSelect = currSizePerPage === `${option.page}`;
+                    return (
+                        <button
+                            key={option.text}
+                            type="button"
+                            onClick={() => onSizePerPageChange(option.page)}
+                            style={PaginationBtntyle}
+                        >
+                            {option.text}
+                        </button>
+                    );
+                })
+            }
         </div>
-      );
+    );
 
 
     const paginator = paginationFactory({
         page: 1,
-        sizePerPage: 10,
+        sizePerPage: 2,
         lastPageText: '>>',
         firstPageText: '<<',
         nextPageText: '>',
@@ -259,31 +165,8 @@ const UsersManagement = () => {
     })
 
     const [IsOpen, setIsOpen] = useState(false)
-    const [IsOpenRole, setIsOpenRole] = useState(false)
+    const [IsOpenApp, setIsOpenApp] = useState(false)
     const [IsOpenUpdate, setIsOpenUpdate] = useState(false)
-
-    const [r, setR] = useState("");
-    const [show, setShow] = useState(true);
-
-    const addRole = () => {
-
-        if (window.confirm('Do you want to add this role?')) {
-            const roles = JSON.stringify({
-                "name": r,
-            });
-            axios.post('http://localhost:3000/roles', roles, {
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            })
-                .then(response => { console.log("response.data") })
-                .catch(error => {
-                    console.error(error)
-                });
-        }
-
-
-    };
 
     return (
         <DashboardWrapper>
@@ -294,6 +177,10 @@ const UsersManagement = () => {
 
                 <div className="row">
                     <UpdateUserModal onClose={() => setIsOpenUpdate(false)} open={IsOpenUpdate} row={row}>Hello</UpdateUserModal>
+                </div>
+
+                <div className="row">
+                    <UserAppModal onClose={() => setIsOpenApp(false)} open={IsOpenApp} row={row}>Hello</UserAppModal>
                 </div>
 
                 <div className="row">
@@ -314,8 +201,8 @@ const UsersManagement = () => {
                 </div>
             </DashboardWrapperMain>
             <DashboardWrapperRight>
-                
-             {/*<div className="title mb">Revenue by channel</div>
+
+                {/*<div className="title mb">Revenue by channel</div>
                 <div className="mb">
                     <RevenueList />
                 </div>*/}

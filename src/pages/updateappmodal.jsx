@@ -8,10 +8,10 @@ import { Routes, Route, useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from "react-redux";
 import { bindActionCreators } from 'redux';
 import { actionsCreators } from '../actions/index';
+import { API_URL } from '../constants/apiUrl';
 const UpdateAppModal = ({ open, children, onClose,row }) => {
 
     const [url, setUrl] = useState("");
-    //useEffect(() => { setUrl(row.name)}, [row.name] )
 
     const emailRegex = RegExp(
         /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
@@ -90,7 +90,7 @@ const UpdateAppModal = ({ open, children, onClose,row }) => {
             "name": name,
             "isDeleted":false
         });
-        axios.put('http://localhost:3000/applications/'+row._id, application, {
+        axios.put(API_URL+'applications/'+row._id, application, {
             headers: {
                 'Content-Type': 'application/json'
             }
@@ -107,12 +107,6 @@ const UpdateAppModal = ({ open, children, onClose,row }) => {
             swal("Try Again!", "Name or Url Already Exist!", "error");
         });
     }
-
-
-
-
-
-
 
     if (!open) { return null }
 

@@ -9,7 +9,8 @@ import { useSelector, useDispatch } from "react-redux";
 import { bindActionCreators } from 'redux';
 import { actionsCreators } from '../actions/index';
 import SignIn from './Signin';
-import { AiFillDelete,AiFillEdit,AiOutlineSend } from "react-icons/ai";
+import { AiFillDelete, AiFillEdit, AiOutlineSend } from "react-icons/ai";
+import { API_URL } from '../constants/apiUrl';
 const Modal = ({ open, children, onClose, application }) => {
 
     const emailRegex = RegExp(
@@ -71,7 +72,7 @@ const Modal = ({ open, children, onClose, application }) => {
     const [items, setItems] = useState([]);
     const [accounts, setAccounts] = useState([JSON.parse(localStorage.getItem('items'))][0]);
 
-    const [pass, setPass] = useState(true); 
+    const [pass, setPass] = useState(true);
 
 
 
@@ -92,7 +93,7 @@ const Modal = ({ open, children, onClose, application }) => {
             "application": application._id,
             "password": password
         });
-        axios.post('http://localhost:3000/users/signin', log, {
+        axios.post(API_URL+'users/signin', log, {
             headers: {
                 'Content-Type': 'application/json'
             }
@@ -106,7 +107,7 @@ const Modal = ({ open, children, onClose, application }) => {
                 }])
                 setLoading(false);
 
-                axios.post('http://localhost:3000/login', {
+                axios.post(API_URL+'login', {
                     "email": email,
                     "password": password
                 }, {
@@ -154,7 +155,7 @@ const Modal = ({ open, children, onClose, application }) => {
             "picture": "efef",
             "phone": Number(phone)
         });
-        axios.post('http://localhost:3000/users/signup', user, {
+        axios.post(API_URL+'users/signup', user, {
             headers: {
                 'Content-Type': 'application/json'
             }
@@ -164,7 +165,7 @@ const Modal = ({ open, children, onClose, application }) => {
                     "users": response.data._id,
                     "applications": application._id,
                 });
-                axios.post('http://localhost:3000/affectation', aff, {
+                axios.post(API_URL+'affectation', aff, {
                     headers: {
                         'Content-Type': 'application/json'
                     }
@@ -178,7 +179,7 @@ const Modal = ({ open, children, onClose, application }) => {
                             title: 'Your work has been saved',
                             showConfirmButton: false,
                             timer: 2500
-                          })
+                        })
                     })
                     .catch(error => {
                         setLoading(false)
@@ -223,11 +224,14 @@ const Modal = ({ open, children, onClose, application }) => {
     }
 
     useEffect(() => {
-
-        axios.get('http://localhost:3000/applications')
+        axios.get(API_URL+'applications')
             .then(response => {
                 setApplications(response.data)
             })
+
+    }, [applications])
+
+    useEffect(() => {
 
         if (emailRegex.test(email) === false || passwordRegex.test(password) === false) {
             setDisablelogin(true);
@@ -331,30 +335,30 @@ const Modal = ({ open, children, onClose, application }) => {
     };
 
 
-   
+
     const deleteRoleBtnstyle = {
         padding: '5%',
-        
+
     };
 
 
     return (
         <div style={OVERLAY_STYLES}>
             <div style={MODAL_STYLES}>
-            <div style={deleteRoleBtnstyle} hidden={pass}>
+                <div style={deleteRoleBtnstyle} hidden={pass}>
 
-                <input type="password" name="password"  placeholder="Password"
-                    value={password}
-                    hidden={pass}
-                    onChange={(e) => { setPassword(e.target.value); setTouchedpassword(true) }}
-                />
+                    <input type="password" name="password" placeholder="Password"
+                        value={password}
+                        hidden={pass}
+                        onChange={(e) => { setPassword(e.target.value); setTouchedpassword(true) }}
+                    />
                 </div>
 
                 {previousaccounts ?
                     accounts.map((data, index) => {
                         if (application !== undefined) {
                             if (data.app == application.name) {
-                                return (<a onClick={() => { setPass(!pass);setEmail(data.items.email) }}>
+                                return (<a onClick={() => { setPass(!pass); setEmail(data.items.email) }}>
                                     <main class="leaderboard__profiles">
                                         <article class="leaderboard__profile">
 

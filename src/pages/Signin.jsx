@@ -10,6 +10,7 @@ import { bindActionCreators } from 'redux';
 import { actionsCreators } from '../actions/index';
 import Modal from './modal';
 import ReCAPTCHA from 'react-google-recaptcha';
+import { API_URL } from '../constants/apiUrl';
 const SignIn = () => {
 
     const state = useSelector((state) => state);
@@ -84,7 +85,7 @@ const SignIn = () => {
             "picture": "efef",
             "phone": Number(phone)
         });
-        axios.post('http://localhost:3000/users/signup', user, {
+        axios.post(API_URL+'users/signup', user, {
             headers: {
                 'Content-Type': 'application/json'
             }
@@ -104,7 +105,7 @@ const SignIn = () => {
     const LogIn = event => {
         event.preventDefault()
         setLoading(true)
-        axios.post('http://localhost:3000/login', {
+        axios.post(API_URL+'login', {
             "email": email,
             "password": password
         }, {
@@ -145,14 +146,18 @@ const SignIn = () => {
     }, []);
 
     useEffect(() => {
+        axios.get(API_URL+'applications')
+        .then(response => {
+            setApplications(response.data)
+        })
+        .catch(error => {
+            console.error(error);
+        });
+    }, [applications]);
 
-        axios.get('http://localhost:3000/applications')
-            .then(response => {
-                setApplications(response.data)
-            })
-            .catch(error => {
-                console.error(error);
-            });
+    useEffect(() => {
+
+
 
         if (emailRegex.test(email) === false || passwordRegex.test(password) === false) {
             setDisablelogin(true);

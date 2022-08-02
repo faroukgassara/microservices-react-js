@@ -9,6 +9,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { bindActionCreators } from 'redux';
 import { actionsCreators } from '../actions/index';
 import { Select } from '@material-ui/core';
+import { API_URL } from '../constants/apiUrl';
 const AddUserModal = ({ open, children, onClose }) => {
 
     const emailRegex = RegExp(
@@ -62,7 +63,7 @@ const AddUserModal = ({ open, children, onClose }) => {
     const [touchedconfirmpassword, setTouchedconfirmpassword] = useState(false);
 
     const [applications, setApplications] = useState([]);
-    
+
     const [IsOpen, setIsOpen] = useState(false)
     const [users, setUsers] = useState([])
     const [previousaccounts, setPreviousaccounts] = useState(false);
@@ -75,13 +76,16 @@ const AddUserModal = ({ open, children, onClose }) => {
     const [checkedd, setCheckedd] = useState(false);
     const toggleCheckedd = () => setCheckedd(value => !value);
 
-
     useEffect(() => {
-
-        axios.get('http://localhost:3000/applications')
+        axios.get(API_URL+'applications')
             .then(response => {
                 setApplications(response.data)
             })
+
+    }, [applications])
+
+
+    useEffect(() => {
 
         if (emailRegex.test(email) === false || passwordRegex.test(password) === false) {
             setDisablelogin(true);
@@ -193,7 +197,7 @@ const AddUserModal = ({ open, children, onClose }) => {
             "picture": "efef",
             "phone": Number(phone)
         });
-        axios.post('http://localhost:3000/users/signup', user, {
+        axios.post(API_URL+'users/signup', user, {
             headers: {
                 'Content-Type': 'application/json'
             }
@@ -203,19 +207,21 @@ const AddUserModal = ({ open, children, onClose }) => {
                     "users": response.data._id,
                     "applications": app_id,
                 });
-                axios.post('http://localhost:3000/affectation', aff, {
+                axios.post(API_URL+'affectation', aff, {
                     headers: {
                         'Content-Type': 'application/json'
                     }
                 })
-                .then(response => { onClose();setLoading(false);swal({
-                    position: 'top-end',
-                    icon: 'success',
-                    title: 'Your work has been saved',
-                    showConfirmButton: false,
-                    timer: 2500
-                  }) })
-                .catch(error => {
+                    .then(response => {
+                        onClose(); setLoading(false); swal({
+                            position: 'top-end',
+                            icon: 'success',
+                            title: 'Your work has been saved',
+                            showConfirmButton: false,
+                            timer: 2500
+                        })
+                    })
+                    .catch(error => {
                         setLoading(false)
                         swal("Try Again!", "Unknown error has occurred!", "error");
 
@@ -234,12 +240,12 @@ const AddUserModal = ({ open, children, onClose }) => {
     const [tableData, setTableData] = useState([]);
 
     useEffect(() => {
-        axios.get('http://localhost:3000/applications')
+        axios.get(API_URL+'applications')
             .then(response => { setTableData(response.data); })
             .catch(error => {
                 console.error(error)
             });
-    }, [])
+    }, [tableData])
 
 
     const [disablesignin, setDisablesignin] = useState(false);

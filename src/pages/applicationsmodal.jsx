@@ -8,6 +8,7 @@ import { Routes, Route, useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from "react-redux";
 import { bindActionCreators } from 'redux';
 import { actionsCreators } from '../actions/index';
+import { API_URL } from '../constants/apiUrl';
 const ApplicationsModal = ({ open, children, onClose }) => {
 
     const emailRegex = RegExp(
@@ -82,7 +83,7 @@ const ApplicationsModal = ({ open, children, onClose }) => {
             "name": name,
             "isDeleted":false
         });
-        axios.post('http://localhost:3000/applications', application, {
+        axios.post(API_URL+'applications', application, {
             headers: {
                 'Content-Type': 'application/json'
             }
@@ -99,12 +100,6 @@ const ApplicationsModal = ({ open, children, onClose }) => {
             swal("Try Again!", "Name or Url Already Exist!", "error");
         });
     }
-
-
-
-
-
-
 
     if (!open) { return null }
 
