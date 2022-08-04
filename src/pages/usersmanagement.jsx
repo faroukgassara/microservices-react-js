@@ -155,7 +155,7 @@ const UsersManagement = () => {
 
     const paginator = paginationFactory({
         page: 1,
-        sizePerPage: 2,
+        sizePerPage: 10,
         lastPageText: '>>',
         firstPageText: '<<',
         nextPageText: '>',

@@ -1,6 +1,20 @@
 /*editor error animate*/
 /*@import "~toastr/build/toastr.min.css";*/
 
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+  width: 100%;
+}
+
+.t{
+  overflow-x: auto;
+}
+th, td {
+  text-align: left;
+  padding: 8px;}
+
+  tr:nth-child(even){background-color: #f2f2f2}
 .react-bs-table-container .react-bs-table-search-form {
   margin-bottom: 0;
 }

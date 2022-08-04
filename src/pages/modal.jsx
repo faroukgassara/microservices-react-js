@@ -74,10 +74,6 @@ const Modal = ({ open, children, onClose, application }) => {
 
     const [pass, setPass] = useState(true);
 
-
-
-
-
     useEffect(() => {
         if (accounts != null) {
             localStorage.setItem('items', JSON.stringify(accounts));
