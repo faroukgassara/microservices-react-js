@@ -109,7 +109,7 @@ const Applications = () => {
     function deleteRole(row) {
         console.log(row)
         axios.delete(API_URL+'roles/' + row._id)
-            .then(response => { console.log("response.data") })
+            .then(response => { console.log(row.name) })
             .catch(error => {
                 console.error(error)
             });

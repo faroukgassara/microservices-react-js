@@ -21,7 +21,7 @@ const UserAppModal = ({ open, children, onClose, row }) => {
     };
 
     useEffect(() => {
-        axios.get(API_URL+'affectation/findByUserEmail/'+row.email)
+        axios.get(API_URL + 'affectation/findByUserEmail/' + row.email)
             .then(response => { setTableData(response.data) })
             .catch(error => {
                 console.error(error)
@@ -57,19 +57,21 @@ const UserAppModal = ({ open, children, onClose, row }) => {
 
     if (!open) { return null }
 
-    function deleteApp (_idAff) {
+    function deleteApp(_idAff) {
         if (window.confirm('Do you want to delete this App to The User?')) {
-            axios.delete(API_URL+'affectation/'+_idAff)
-            .then(response => { swal({
-                position: 'top-end',
-                icon: 'success',
-                title: 'Your work has been saved',
-                showConfirmButton: false,
-                timer: 2500
-              }) })
-            .catch(error => {
-                console.error(error)
-            });
+            axios.delete(API_URL + 'affectation/' + _idAff)
+                .then(response => {
+                    swal({
+                        position: 'top-end',
+                        icon: 'success',
+                        title: 'Your work has been saved',
+                        showConfirmButton: false,
+                        timer: 2500
+                    })
+                })
+                .catch(error => {
+                    console.error(error)
+                });
 
         }
 
@@ -78,36 +80,36 @@ const UserAppModal = ({ open, children, onClose, row }) => {
     return (
         <div style={OVERLAY_STYLES}>
             <div className='area' style={MODAL_STYLES}>
-            <form >
-                        <h1>the applications assigned to : {row.lastname} {row.firstname}</h1>
+                <form >
+                    <h1>the applications assigned to : {row.lastname} {row.firstname}</h1>
 
-                        <table  cellPadding="0" cellSpacing="0">
-                            <thead>
+                    <table cellPadding="0" cellSpacing="0">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+
+                        <tbody >
+                            {tableData.map(app =>
                                 <tr>
-                                    <th>Name</th>
-                                    <th>Action</th>
+                                    <td>{app.applications.name}</td>
+                                    <td>
+                                        <div className="row">
+
+                                            <button style={deleteBtnStyle} onClick={() => deleteApp(app._id)} type="button" className="btn btn-danger"> <AiFillDelete /></button>
+
+                                        </div>
+                                    </td>
                                 </tr>
-                            </thead>
-
-                            <tbody >
-                                {tableData.map(app =>
-                                    <tr>
-                                        <td>{app.applications.name}</td>
-                                        <td>
-                                            <div className="row">
-
-                                                <button style={deleteBtnStyle} onClick={() => deleteApp(app._id)} type="button" className="btn btn-danger"> <AiFillDelete /></button>
-
-                                            </div>
-                                        </td>
-                                    </tr>
-                                )}
-                            </tbody>
-                        </table>
+                            )}
+                        </tbody>
+                    </table>
 
 
 
-                    </form>
+                </form>
 
 
             </div>
