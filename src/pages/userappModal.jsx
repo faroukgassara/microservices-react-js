@@ -12,7 +12,9 @@ import { AiFillDelete, AiFillEdit, AiOutlineSend } from "react-icons/ai";
 import { API_URL } from '../constants/apiUrl';
 const UserAppModal = ({ open, children, onClose, row }) => {
 
+    
     const [tableData, setTableData] = useState("")
+    const state = useSelector((state) => state);
 
     const deleteBtnStyle = {
         backgroundColor: '#f44336',
@@ -21,7 +23,7 @@ const UserAppModal = ({ open, children, onClose, row }) => {
     };
 
     useEffect(() => {
-        axios.get(API_URL + 'affectation/findByUserEmail/' + row.email)
+        axios.get(API_URL + 'affectation/findByUserEmail/' + row.email, { headers: {"Authorization" : `Bearer ${state.user.jwt.jwt}`} })
             .then(response => { setTableData(response.data) })
             .catch(error => {
                 console.error(error)
@@ -59,7 +61,7 @@ const UserAppModal = ({ open, children, onClose, row }) => {
 
     function deleteApp(_idAff) {
         if (window.confirm('Do you want to delete this App to The User?')) {
-            axios.delete(API_URL + 'affectation/' + _idAff)
+            axios.delete(API_URL + 'affectation/' + _idAff, { headers: {"Authorization" : `Bearer ${state.user.jwt.jwt}`} })
                 .then(response => {
                     swal({
                         position: 'top-end',

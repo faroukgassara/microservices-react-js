@@ -193,7 +193,8 @@ const UpdateUserModal = ({ open, children, onClose, row }) => {
         });
         axios.put(API_URL+'users/' + row._id, user, {
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                "Authorization" : `Bearer ${state.user.jwt.jwt}`
             }
         }).then(response => {
             setLoading(false);

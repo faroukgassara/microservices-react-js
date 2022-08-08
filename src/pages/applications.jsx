@@ -8,7 +8,7 @@ import DashboardWrapper, { DashboardWrapperMain, DashboardWrapperRight } from '.
 import SummaryBox, { SummaryBoxSpecial } from '../components/summary-box/SummaryBox'
 import { colors, data } from '../constants'
 import cellEditFactory from 'react-bootstrap-table2-editor';
-
+import { useSelector, useDispatch } from "react-redux";
 import BootstrapTable from 'react-bootstrap-table-next';
 //import 'bootstrap/dist/css/bootstrap.min.css'
 //import 'react-bootstrap-table-next/dist/react-bootstrap-table2.css'
@@ -51,25 +51,37 @@ ChartJS.register(
 
 const Applications = () => {
 
+    const state = useSelector((state) => state);
+
     const [tableData, setTableData] = useState([]);
     const [IsOpen, setIsOpen] = useState(false);
     const [IsOpenApp, setIsOpenApp] = useState(false);
     const [rolestableData, setRolesTableData] = useState([])
 
     useEffect(() => {
-        axios.get(API_URL+'applications')
+        axios.get(API_URL + 'applications', {
+            headers: {
+                'Content-Type': 'application/json',
+                "Authorization": `Bearer ${state.user.jwt.jwt}`
+            }
+        })
             .then(response => { setTableData(response.data); })
             .catch(error => {
-                console.error(error)
+                swal("Try Again!", "Error!", "error");
             });
     }, [tableData])
 
 
     useEffect(() => {
-        axios.get(API_URL+'roles')
+        axios.get(API_URL + 'roles', {
+            headers: {
+                'Content-Type': 'application/json',
+                "Authorization": `Bearer ${state.user.jwt.jwt}`
+            }
+        })
             .then(response => { setRolesTableData(response.data) })
             .catch(error => {
-                console.error(error)
+                swal("Try Again!", "Error!", "error");
             });
     }, [rolestableData])
 
@@ -80,20 +92,23 @@ const Applications = () => {
                     "_id": row._id,
                     "name": row.name,
                 });
-                axios.put(API_URL+'roles/' + row._id, roles, {
+                axios.put(API_URL + 'roles/' + row._id, roles, {
                     headers: {
-                        'Content-Type': 'application/json'
+                        'Content-Type': 'application/json',
+                        "Authorization": `Bearer ${state.user.jwt.jwt}`
                     }
                 })
-                    .then(response => { swal({
-                        position: 'top-end',
-                        icon: 'success',
-                        title: 'Your work has been saved',
-                        showConfirmButton: false,
-                        timer: 2500
-                      }) })
+                    .then(response => {
+                        swal({
+                            position: 'top-end',
+                            icon: 'success',
+                            title: 'Your work has been saved',
+                            showConfirmButton: false,
+                            timer: 2500
+                        })
+                    })
                     .catch(error => {
-                        console.error(error)
+                        swal("Try Again!", "Error!", "error");
                     });
             }
         }
@@ -107,11 +122,22 @@ const Applications = () => {
     };
 
     function deleteRole(row) {
-        console.log(row)
-        axios.delete(API_URL+'roles/' + row._id)
-            .then(response => { console.log(row.name) })
+        axios.delete(API_URL + 'roles/' + row._id, {
+            headers: {
+                "Authorization": `Bearer ${state.user.jwt.jwt}`
+            }
+        })
+            .then(response => {
+                swal({
+                    position: 'top-end',
+                    icon: 'success',
+                    title: 'Your work has been saved',
+                    showConfirmButton: false,
+                    timer: 2500
+                })
+            })
             .catch(error => {
-                console.error(error)
+                swal("Try Again!", "Error!", "error");
             });
     }
 
@@ -136,9 +162,10 @@ const Applications = () => {
             const roles = JSON.stringify({
                 "name": r,
             });
-            axios.post(API_URL+'roles', roles, {
+            axios.post(API_URL + 'roles', roles, {
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    "Authorization" : `Bearer ${state.user.jwt.jwt}`
                 }
             })
                 .then(response => {
@@ -151,7 +178,7 @@ const Applications = () => {
                     })
                 })
                 .catch(error => {
-                    console.error(error)
+                    swal("Try Again!", "Error!", "error");
                 });
         }
 
@@ -178,7 +205,11 @@ const Applications = () => {
 
     function deleteApp(row) {
         if (window.confirm('Do you want to add this role?')) {
-            axios.delete(API_URL+'applications/' + row._id)
+            axios.delete(API_URL + 'applications/' + row._id, {
+                headers: {
+                    "Authorization" : `Bearer ${state.user.jwt.jwt}`
+                }
+            })
                 .then(response => {
                     swal({
                         position: 'top-end',
@@ -341,7 +372,7 @@ const Applications = () => {
                         </Box>
                     </div>
                 </div>
-                
+
             </DashboardWrapperMain>
             <DashboardWrapperRight>
                 <div className="title mb">Roles</div>

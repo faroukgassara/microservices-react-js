@@ -12,6 +12,8 @@ import { AiFillDelete, AiFillEdit, AiOutlineSend } from "react-icons/ai";
 import { API_URL } from '../constants/apiUrl';
 const RoleModal = ({ open, children, onClose, row }) => {
 
+    const state = useSelector((state) => state);
+
 
     const MODAL_STYLES = {
         position: 'fixed',
@@ -47,7 +49,7 @@ const RoleModal = ({ open, children, onClose, row }) => {
     const [disablessignup, setDisablessignup] = useState(true);
 
     useEffect(() => {
-        axios.get(API_URL+'roles')
+        axios.get(API_URL+'roles', { headers: {"Authorization" : `Bearer ${state.user.jwt.jwt}`} })
             .then(response => { setRolesTableData(response.data) })
             .catch(error => {
                 console.error(error)
@@ -70,7 +72,8 @@ const RoleModal = ({ open, children, onClose, row }) => {
         });
         axios.post(API_URL+'applications/AffectRoleToApp', usertoRole, {
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                "Authorization" : `Bearer ${state.user.jwt.jwt}`
             }
         })
             .then(response => {
@@ -116,7 +119,8 @@ const RoleModal = ({ open, children, onClose, row }) => {
         });
         axios.post(API_URL+'applications/DeleteRoleFromApp', usertoRole, {
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                "Authorization" : `Bearer ${state.user.jwt.jwt}`
             }
         })
             .then(response => {

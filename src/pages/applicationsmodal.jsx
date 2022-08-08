@@ -85,7 +85,8 @@ const ApplicationsModal = ({ open, children, onClose }) => {
         });
         axios.post(API_URL+'applications', application, {
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                "Authorization" : `Bearer ${state.user.jwt.jwt}`
             }
         })
         .then(response => {onClose();swal({

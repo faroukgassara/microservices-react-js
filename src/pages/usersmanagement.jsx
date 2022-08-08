@@ -25,6 +25,7 @@ import AddUserModal from "./addusermodal";
 import UpdateAppModal from "./updateappmodal";
 import UpdateUserModal from "./updateusermodal";
 import UserAppModal from "./userappModal";
+import { useSelector, useDispatch } from "react-redux";
 
 
 //import 'bootstrap/dist/css/bootstrap.min.css'
@@ -43,10 +44,12 @@ ChartJS.register(
 
 const UsersManagement = () => {
 
+    const state = useSelector((state) => state);
+
     const [tableData, setTableData] = useState([])
 
     useEffect(() => {
-        axios.get(API_URL + 'users')
+        axios.get(API_URL + 'users', { headers: {"Authorization" : `Bearer ${state.user.jwt.jwt}`} })
             .then(response => { setTableData(response.data) })
             .catch(error => {
                 console.error(error)
@@ -55,7 +58,7 @@ const UsersManagement = () => {
 
     function deleteUser(row) {
         console.log(row)
-        axios.delete(API_URL + 'users/' + row._id)
+        axios.delete(API_URL + 'users/' + row._id, { headers: {"Authorization" : `Bearer ${state.user.jwt.jwt}`} })
             .then(response => { console.log("response.data") })
             .catch(error => {
                 console.error(error)

@@ -92,7 +92,9 @@ const UpdateAppModal = ({ open, children, onClose,row }) => {
         });
         axios.put(API_URL+'applications/'+row._id, application, {
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                "Authorization" : `Bearer ${state.user.jwt.jwt}`
+                
             }
         })
         .then(response => {setLoading(false);onClose();swal({
