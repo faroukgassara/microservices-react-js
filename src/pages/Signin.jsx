@@ -260,8 +260,9 @@ const SignIn = () => {
                                 value={lastname}
                                 onChange={(e) => { setLastname(e.target.value); setTouchedlastname(true) }}
                             />
-                            <span className="left-side" hidden={disableerrorlastname}>enter a lastname</span>
+                             <span className="left-side" hidden={disableerrorlastname}>enter a lastname</span>
                         </div>
+                       
 
                         <div className="form-group col-md-6">
                             <input type="text" name="firstname" className="form-control" placeholder="Firstname"

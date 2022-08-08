@@ -26,7 +26,7 @@ import UpdateAppModal from "./updateappmodal";
 import UpdateUserModal from "./updateusermodal";
 import UserAppModal from "./userappModal";
 import { useSelector, useDispatch } from "react-redux";
-
+import swal from 'sweetalert';
 
 //import 'bootstrap/dist/css/bootstrap.min.css'
 
@@ -51,17 +51,15 @@ const UsersManagement = () => {
     useEffect(() => {
         axios.get(API_URL + 'users', { headers: {"Authorization" : `Bearer ${state.user.jwt.jwt}`} })
             .then(response => { setTableData(response.data) })
-            .catch(error => {
-                console.error(error)
+            .catch(error => { swal("Try Again!", "Unknown error has occurred!", "error");
             });
     }, [tableData])
 
     function deleteUser(row) {
         console.log(row)
         axios.delete(API_URL + 'users/' + row._id, { headers: {"Authorization" : `Bearer ${state.user.jwt.jwt}`} })
-            .then(response => { console.log("response.data") })
-            .catch(error => {
-                console.error(error)
+            .then(response => { })
+            .catch(error => { swal("Try Again!", "Unknown error has occurred!", "error");
             });
     }
 
@@ -80,7 +78,7 @@ const UsersManagement = () => {
     const PaginationBtntyle = {
         backgroundColor: '#4CAF50',
         padding: '6px',
-        margin: '1px',
+        margin: '5px',
     };
 
     const sendBtnstyle = {
@@ -114,7 +112,6 @@ const UsersManagement = () => {
 
 
     const columns = [
-        { dataField: 'email', text: 'Email', sort: true, filter: textFilter() },
         { dataField: 'lastname', text: 'Lastname', sort: true, filter: textFilter() },
         { dataField: 'firstname', text: 'Firstname', sort: true, filter: textFilter() },
         { dataField: 'address', text: 'Address', sort: true, filter: textFilter() },

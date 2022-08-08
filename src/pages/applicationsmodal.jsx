@@ -28,30 +28,6 @@ const ApplicationsModal = ({ open, children, onClose }) => {
     const { signIn, jwt, logOut } = bindActionCreators(actionsCreators, dispatch)
 
 
-    const MODAL_STYLES = {
-        position: 'fixed',
-        top: '10%',
-        left: '50%',
-        transform: 'translate(-50%,+50%)',
-        backgroundColor: '#FFF',
-        width: '500px',
-        maxWidth: '100%',
-        height: '400px',
-        maxHeight: '100%',
-        zIndex: 1000,
-    }
-
-    const OVERLAY_STYLES = {
-        position: 'fixed',
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        backgroundColor: 'rgba(0,0,0,.7)',
-        zIndex: 1000,
-        overflow: 'auto',
-    }
-
     const [url, setUrl] = useState("");
     const [name, setName] = useState("");
     const [loading, setLoading] = useState(false);
@@ -106,8 +82,9 @@ const ApplicationsModal = ({ open, children, onClose }) => {
 
 
     return (
-        <div style={OVERLAY_STYLES}>
-            <div style={MODAL_STYLES}>
+        <div className='modal' >
+            <div className='modal-content' >
+            <button onClick={() => onClose()} type="button" style={{backgroundColor: '#f44336',}}> Close </button>
                 <form>
                     <h1>New Application</h1>
                     <div className="social-container"></div>

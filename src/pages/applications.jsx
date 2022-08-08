@@ -284,7 +284,7 @@ const Applications = () => {
     const PaginationBtntyle = {
         backgroundColor: '#4CAF50',
         padding: '6px',
-        margin: '1px',
+        margin: '5px',
     };
 
     const sizePerPageRenderer = ({
@@ -377,7 +377,7 @@ const Applications = () => {
             <DashboardWrapperRight>
                 <div className="title mb">Roles</div>
 
-                <div className="mb">
+                <div className="mb area">
                     <button style={adduserbtn} type="button" onClick={() => { setShow(!show) }} className="btn btn-danger">New Role +</button>
 
                     <input type="text" name="r" className="form-control" placeholder="Enter role"

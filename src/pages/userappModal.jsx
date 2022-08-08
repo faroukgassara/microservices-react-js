@@ -12,7 +12,7 @@ import { AiFillDelete, AiFillEdit, AiOutlineSend } from "react-icons/ai";
 import { API_URL } from '../constants/apiUrl';
 const UserAppModal = ({ open, children, onClose, row }) => {
 
-    
+
     const [tableData, setTableData] = useState("")
     const state = useSelector((state) => state);
 
@@ -23,45 +23,18 @@ const UserAppModal = ({ open, children, onClose, row }) => {
     };
 
     useEffect(() => {
-        axios.get(API_URL + 'affectation/findByUserEmail/' + row.email, { headers: {"Authorization" : `Bearer ${state.user.jwt.jwt}`} })
+        axios.get(API_URL + 'affectation/findByUserEmail/' + row.email, { headers: { "Authorization": `Bearer ${state.user.jwt.jwt}` } })
             .then(response => { setTableData(response.data) })
             .catch(error => {
                 console.error(error)
             });
     }, [tableData])
 
-    const MODAL_STYLES = {
-        position: 'fixed',
-        top: '-10%',
-        left: '50%',
-        transform: 'translate(-50%,+50%)',
-        backgroundColor: '#FFF',
-        width: '700px',
-        maxWidth: '100%',
-        height: '500px',
-        maxHeight: '100%',
-        zIndex: 1000,
-        //paddingTop: '2%'
-
-    }
-
-    const OVERLAY_STYLES = {
-        position: 'fixed',
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        backgroundColor: 'rgba(0,0,0,.7)',
-        zIndex: 1000,
-        overflow: 'auto',
-
-    }
-
     if (!open) { return null }
 
     function deleteApp(_idAff) {
         if (window.confirm('Do you want to delete this App to The User?')) {
-            axios.delete(API_URL + 'affectation/' + _idAff, { headers: {"Authorization" : `Bearer ${state.user.jwt.jwt}`} })
+            axios.delete(API_URL + 'affectation/' + _idAff, { headers: { "Authorization": `Bearer ${state.user.jwt.jwt}` } })
                 .then(response => {
                     swal({
                         position: 'top-end',
@@ -80,10 +53,13 @@ const UserAppModal = ({ open, children, onClose, row }) => {
     };
 
     return (
-        <div style={OVERLAY_STYLES}>
-            <div className='area' style={MODAL_STYLES}>
+        <div className='modal' >
+            <div className='modal-content area' >
+
+                <button onClick={() => onClose()} type="button" style={{ backgroundColor: '#f44336', }}> Close </button>
                 <form >
-                    <h1>the applications assigned to : {row.lastname} {row.firstname}</h1>
+                    <h2>the applications assigned to : {row.lastname} {row.firstname}</h2>
+                    <h5>{row.email}</h5>
 
                     <table cellPadding="0" cellSpacing="0">
                         <thead>
@@ -111,10 +87,14 @@ const UserAppModal = ({ open, children, onClose, row }) => {
 
 
 
+
+
+
                 </form>
 
 
             </div>
+
         </div>
 
     )

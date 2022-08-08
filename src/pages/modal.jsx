@@ -168,6 +168,7 @@ const Modal = ({ open, children, onClose, application }) => {
                 })
                     .then(response => {
                         setLoading(false);
+                        onClose();
                         navigate('/');
                         swal({
                             position: 'top-end',
@@ -184,6 +185,7 @@ const Modal = ({ open, children, onClose, application }) => {
                     });
             })
             .catch(error => {
+                console.error(error)
                 setLoading(false)
                 if (error.response.data.statusCode == 500) {
                     swal("USER EXISTSl!", "Try To Login or Confirm you account!", "error");
@@ -191,32 +193,6 @@ const Modal = ({ open, children, onClose, application }) => {
                     swal("Try Again!", "Unknown error has occurred!", "error");
                 }
             });
-    }
-
-    const MODAL_STYLES = {
-        position: 'fixed',
-        top: '-25%',
-        left: '50%',
-        transform: 'translate(-50%,+50%)',
-        backgroundColor: '#FFF',
-        width: '600px',
-        maxWidth: '100%',
-        height: '600px',
-        maxHeight: '100%',
-        zIndex: 1000,
-        paddingTop: '*90px'
-    }
-
-    const OVERLAY_STYLES = {
-        position: 'fixed',
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        backgroundColor: 'rgba(0,0,0,.7)',
-        zIndex: 1000,
-        overflow: 'auto',
-
     }
 
     useEffect(() => {
@@ -330,8 +306,6 @@ const Modal = ({ open, children, onClose, application }) => {
         setPreviousaccounts(false)
     };
 
-
-
     const deleteRoleBtnstyle = {
         padding: '5%',
 
@@ -339,8 +313,9 @@ const Modal = ({ open, children, onClose, application }) => {
 
 
     return (
-        <div style={OVERLAY_STYLES}>
-            <div style={MODAL_STYLES}>
+        <div className='modal' >
+            <div className='modal-content' >
+            <button onClick={() => onClose()} type="button" style={{backgroundColor: '#f44336',}}> Close </button>
                 <div style={deleteRoleBtnstyle} hidden={pass}>
 
                     <input type="password" name="password" placeholder="Password"

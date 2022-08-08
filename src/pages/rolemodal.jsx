@@ -144,8 +144,9 @@ const RoleModal = ({ open, children, onClose, row }) => {
 
 
     return (
-        <div style={OVERLAY_STYLES}>
-            <div className='area' style={MODAL_STYLES}>
+        <div className='modal' >
+            <div className='modal-content ' >
+            <button onClick={() => onClose()} type="button" style={{backgroundColor: '#f44336',}}> Close </button>
                 <div hidden={disablesignin}>
 
                     <form>
@@ -175,9 +176,9 @@ const RoleModal = ({ open, children, onClose, row }) => {
                     </form>
                 </div>
 
-                <div  hidden={disablessignup}>
+                <div  className='area' hidden={disablessignup}>
                     <form >
-                        <h1>the roles assigned to : {row.name}</h1>
+                        <h2>the roles assigned to : {row.name}</h2>
 
                         <table  cellPadding="0" cellSpacing="0">
                             <thead>

@@ -114,8 +114,9 @@ const UpdateAppModal = ({ open, children, onClose,row }) => {
 
 
     return (
-        <div style={OVERLAY_STYLES}>
-            <div style={MODAL_STYLES}>
+        <div className='modal' >
+            <div className='modal-content ' >
+            <button onClick={() => onClose()} type="button" style={{backgroundColor: '#f44336',}}> Close </button>
                 <form>
                     <h1>Edit Application {row.name}</h1>
                     <div className="social-container"></div>

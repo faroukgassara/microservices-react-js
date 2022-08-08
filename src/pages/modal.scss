@@ -1,8 +1,39 @@
+/* The Modal (background) */
+
+
+
+.modal {
+  //display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1000; /* Sit on top */
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgba(0,0,0,.7); /* Fallback color */
+}
+
+
+
+/* Modal Content/Box */
+.modal-content {
+  transform: 'translate(-50%,+50%)';
+  background-color: #fefefe;
+  margin: 5% auto; /* 15% from the top and centered */
+  padding: 30px;
+  border: 1px solid #888;
+  width: 50%; /* Could be more or less, depending on screen size */
+}
+
 .area {
   padding: 1rem;
   background: white;
-  height: 250px;
+  height: 80%;
   overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .select-box {
@@ -98,7 +129,6 @@
   
   &__option {
     display: block;
-    padding: 15px;
     background-color: #fff;
     
     &:hover,
