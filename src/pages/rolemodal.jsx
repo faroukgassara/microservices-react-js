@@ -52,7 +52,7 @@ const RoleModal = ({ open, children, onClose, row }) => {
         axios.get(API_URL+'roles', { headers: {"Authorization" : `Bearer ${state.user.jwt.jwt}`} })
             .then(response => { setRolesTableData(response.data) })
             .catch(error => {
-                console.error(error)
+                swal("Try Again!", "Unknown error has occurred!", "error");
             });
     }, [rolestableData])
 
@@ -87,8 +87,6 @@ const RoleModal = ({ open, children, onClose, row }) => {
             })
             .catch(error => {
                 setLoading(false);
-                console.log(error)
-
                 swal("Try Again!", "Unknown error has occurred!", "error");
             });
     }
@@ -136,8 +134,6 @@ const RoleModal = ({ open, children, onClose, row }) => {
             })
             .catch(error => {
                 setLoading(false);
-                console.log(error)
-
                 swal("Try Again!", "Unknown error has occurred!", "error");
             });
     };

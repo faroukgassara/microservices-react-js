@@ -70,11 +70,9 @@ const ApplicationsModal = ({ open, children, onClose }) => {
             title: 'Your work has been saved',
             showConfirmButton: false,
             timer: 2500
-          });setLoading(false);onClose();console.log("response.data")})
+          });setLoading(false);onClose();})
         .catch(error => {
             setLoading(false)
-            console.error(error)
-            console.log(application)
             swal("Try Again!", "Name or Url Already Exist!", "error");
         });
     }

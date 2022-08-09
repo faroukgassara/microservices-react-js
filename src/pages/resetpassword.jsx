@@ -43,7 +43,6 @@ const ResetPassword = () => {
           })})
         .catch(error => {
             setLoading(false)
-            console.log(error)
             swal("Try Again!", "Unknown error has occurred!", "error");
         });
     }

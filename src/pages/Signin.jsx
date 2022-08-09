@@ -151,7 +151,7 @@ const SignIn = () => {
             setApplications(response.data)
         })
         .catch(error => {
-            console.error(error);
+            swal("Try Again!", "Unknown error has occurred!", "error");
         });
     }, [applications]);
 

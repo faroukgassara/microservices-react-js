@@ -105,7 +105,6 @@ const Modal = ({ open, children, onClose, application }) => {
 
                 if (accounts.length > 1) {
                     const arrayUniqueByKey = [...new Map(accounts.map(item => [item[key].email, item])).values()];
-                    console.log(arrayUniqueByKey)
                     setAccounts(arrayUniqueByKey)
                 }
 
@@ -193,7 +192,6 @@ const Modal = ({ open, children, onClose, application }) => {
                     });
             })
             .catch(error => {
-                console.error(error)
                 setLoading(false)
                 if (error.response.data.statusCode == 500) {
                     swal("USER EXISTSl!", "Try To Login or Confirm you account!", "error");

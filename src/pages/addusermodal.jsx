@@ -220,7 +220,7 @@ const AddUserModal = ({ open, children, onClose }) => {
         axios.get(API_URL+'applications')
             .then(response => { setTableData(response.data); })
             .catch(error => {
-                console.error(error)
+                swal("Try Again!", "Unknown error has occurred!", "error");
             });
     }, [tableData])
 
