@@ -11,6 +11,7 @@ import { actionsCreators } from '../actions/index';
 import { AiFillDelete, AiFillEdit, AiOutlineSend } from "react-icons/ai";
 import { API_URL } from '../constants/apiUrl';
 const UserAppModal = ({ open, children, onClose, row }) => {
+   
 
 
     const [tableData, setTableData] = useState("")
@@ -26,9 +27,10 @@ const UserAppModal = ({ open, children, onClose, row }) => {
         axios.get(API_URL + 'affectation/findByUserEmail/' + row.email, { headers: { "Authorization": `Bearer ${state.user.jwt.jwt}` } })
             .then(response => { setTableData(response.data) })
             .catch(error => {
-                console.error(error)
+                swal("Try Again!", "Error!", "error");
             });
     }, [tableData])
+
 
     if (!open) { return null }
 
@@ -45,7 +47,7 @@ const UserAppModal = ({ open, children, onClose, row }) => {
                     })
                 })
                 .catch(error => {
-                    console.error(error)
+                    swal("Try Again!", "Error!", "error");
                 });
 
         }
@@ -71,7 +73,7 @@ const UserAppModal = ({ open, children, onClose, row }) => {
 
                         <tbody >
                             {tableData.map(app =>
-                                <tr>
+                                <tr key={app._id}>
                                     <td>{app.applications.name}</td>
                                     <td>
                                         <div className="row">

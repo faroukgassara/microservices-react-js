@@ -28,6 +28,14 @@
   width: 50%; /* Could be more or less, depending on screen size */
 }
 
+.areaa {
+  padding: 1rem;
+  background: white;
+  height: 60%;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
 .area {
   padding: 1rem;
   background: white;

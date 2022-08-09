@@ -211,7 +211,7 @@ const UpdateUserModal = ({ open, children, onClose, row }) => {
 
                     <div className="row">
                         <div className="form-group col-md-6">
-                            <input type="text" name="lastname" className="form-control" placeholder="Lastname"
+                            <input type="text" name="lastname" className="form-control" placeholder={row.lastname}
                                 value={lastname}
                                 onChange={(e) => { setLastname(e.target.value); setTouchedlastname(true) }}
                             />
@@ -219,7 +219,7 @@ const UpdateUserModal = ({ open, children, onClose, row }) => {
                         </div>
 
                         <div className="form-group col-md-6">
-                            <input type="text" name="firstname" className="form-control" placeholder="Firstname"
+                            <input type="text" name="firstname" className="form-control" placeholder={row.firstname}
                                 value={firstname}
                                 onChange={(e) => { setFirstname(e.target.value); setTouchedfirstname(true) }}
                             />
@@ -271,7 +271,7 @@ const UpdateUserModal = ({ open, children, onClose, row }) => {
                         </div>
                     </div>
 
-                    <input type="text" name="address" className="form-control" placeholder="Address"
+                    <input type="text" name="address" className="form-control" placeholder={row.address}
                         value={address}
                         onChange={(e) => { setAddress(e.target.value); setTouchedaddress(true) }}
                     />
@@ -279,7 +279,7 @@ const UpdateUserModal = ({ open, children, onClose, row }) => {
 
                     <div className="row">
                         <div className="form-group col-md-6">
-                            <input type="number" name="cin" className="form-control" placeholder="CIN"
+                            <input type="number" name="cin" className="form-control" placeholder={row.cin}
                                 value={cin}
                                 onChange={(e) => { setCin(e.target.value); setTouchedcin(true) }}
                             />
@@ -287,7 +287,7 @@ const UpdateUserModal = ({ open, children, onClose, row }) => {
                         </div>
 
                         <div className="form-group col-md-6">
-                            <input type="number" name="phone" className="form-control" placeholder="Phone Number"
+                            <input type="number" name="phone" className="form-control" placeholder={row.phone}
                                 value={phone}
                                 onChange={(e) => { setPhone(e.target.value); setTouchedphone(true) }}
                             />

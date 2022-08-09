@@ -52,7 +52,6 @@ const ApplicationsModal = ({ open, children, onClose }) => {
     })
 
     const AddApp = event => {
-        event.preventDefault()
         setLoading(true)
         const application = JSON.stringify({
             "url": url,
@@ -74,6 +73,8 @@ const ApplicationsModal = ({ open, children, onClose }) => {
           });setLoading(false);onClose();console.log("response.data")})
         .catch(error => {
             setLoading(false)
+            console.error(error)
+            console.log(application)
             swal("Try Again!", "Name or Url Already Exist!", "error");
         });
     }

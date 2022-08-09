@@ -89,7 +89,7 @@ const Modal = ({ open, children, onClose, application }) => {
             "application": application._id,
             "password": password
         });
-        axios.post(API_URL+'users/signin', log, {
+        axios.post(API_URL + 'users/signin', log, {
             headers: {
                 'Content-Type': 'application/json'
             }
@@ -101,9 +101,17 @@ const Modal = ({ open, children, onClose, application }) => {
                     items: response.data,
                     app: application.name,
                 }])
+                const key = 'items';
+
+                if (accounts.length > 1) {
+                    const arrayUniqueByKey = [...new Map(accounts.map(item => [item[key].email, item])).values()];
+                    console.log(arrayUniqueByKey)
+                    setAccounts(arrayUniqueByKey)
+                }
+
                 setLoading(false);
 
-                axios.post(API_URL+'login', {
+                axios.post(API_URL + 'login', {
                     "email": email,
                     "password": password
                 }, {
@@ -151,7 +159,7 @@ const Modal = ({ open, children, onClose, application }) => {
             "picture": "efef",
             "phone": Number(phone)
         });
-        axios.post(API_URL+'users/signup', user, {
+        axios.post(API_URL + 'users/signup', user, {
             headers: {
                 'Content-Type': 'application/json'
             }
@@ -161,7 +169,7 @@ const Modal = ({ open, children, onClose, application }) => {
                     "users": response.data._id,
                     "applications": application._id,
                 });
-                axios.post(API_URL+'affectation', aff, {
+                axios.post(API_URL + 'affectation', aff, {
                     headers: {
                         'Content-Type': 'application/json'
                     }
@@ -196,7 +204,7 @@ const Modal = ({ open, children, onClose, application }) => {
     }
 
     useEffect(() => {
-        axios.get(API_URL+'applications')
+        axios.get(API_URL + 'applications')
             .then(response => {
                 setApplications(response.data)
             })
@@ -315,7 +323,7 @@ const Modal = ({ open, children, onClose, application }) => {
     return (
         <div className='modal' >
             <div className='modal-content' >
-            <button onClick={() => onClose()} type="button" style={{backgroundColor: '#f44336',}}> Close </button>
+                <button onClick={() => onClose()} type="button" style={{ backgroundColor: '#f44336', }}> Close </button>
                 <div style={deleteRoleBtnstyle} hidden={pass}>
 
                     <input type="password" name="password" placeholder="Password"

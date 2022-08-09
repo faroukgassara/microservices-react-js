@@ -27,6 +27,8 @@ import UpdateUserModal from "./updateusermodal";
 import UserAppModal from "./userappModal";
 import { useSelector, useDispatch } from "react-redux";
 import swal from 'sweetalert';
+import OverallList from "../components/overall-list/OverallList";
+import RevenueList from "../components/revenue-list/RevenueList";
 
 //import 'bootstrap/dist/css/bootstrap.min.css'
 
@@ -49,18 +51,31 @@ const UsersManagement = () => {
     const [tableData, setTableData] = useState([])
 
     useEffect(() => {
-        axios.get(API_URL + 'users', { headers: {"Authorization" : `Bearer ${state.user.jwt.jwt}`} })
+        axios.get(API_URL + 'users', { headers: { "Authorization": `Bearer ${state.user.jwt.jwt}` } })
             .then(response => { setTableData(response.data) })
-            .catch(error => { swal("Try Again!", "Unknown error has occurred!", "error");
+            .catch(error => {
+                swal("Try Again!", "Unknown error has occurred!", "error");
             });
     }, [tableData])
 
     function deleteUser(row) {
-        console.log(row)
-        axios.delete(API_URL + 'users/' + row._id, { headers: {"Authorization" : `Bearer ${state.user.jwt.jwt}`} })
-            .then(response => { })
-            .catch(error => { swal("Try Again!", "Unknown error has occurred!", "error");
-            });
+        if (window.confirm('Do you want to delete this user?')) {
+            axios.delete(API_URL + 'users/' + row._id, { headers: { "Authorization": `Bearer ${state.user.jwt.jwt}` } })
+                .then(response => {
+                    swal({
+                        position: 'top-end',
+                        icon: 'success',
+                        title: 'Your work has been saved',
+                        showConfirmButton: false,
+                        timer: 2500
+                    })
+                })
+                .catch(error => {
+                    swal("Try Again!", "Unknown error has occurred!", "error");
+                }
+                );
+        }
+
     }
 
     const deleteBtnStyle = {
@@ -95,11 +110,12 @@ const UsersManagement = () => {
 
 
     const [row, setRow] = useState("");
+    const [rowid, setRowId] = useState("");
     const actionsFormatter = (cell, row, rowIndex, formatExtraData) => {
         return (
             <div className="row">
 
-                <button style={sendBtnstyle} onClick={() => { setIsOpenApp(true); setRow(row) }} type="button" className="btn btn-danger"> <AiOutlineSend /></button>
+                <button style={sendBtnstyle} onClick={() => { setIsOpenApp(true); setRow(row);setRowId(row._id) }} type="button" className="btn btn-danger"> <AiOutlineSend /></button>
 
 
                 <button style={editBtntyle} onClick={() => { setIsOpenUpdate(true); setRow(row) }} type="button" className="btn btn-danger"> <AiFillEdit /></button>
@@ -180,7 +196,7 @@ const UsersManagement = () => {
                 </div>
 
                 <div className="row">
-                    <UserAppModal onClose={() => setIsOpenApp(false)} open={IsOpenApp} row={row}>Hello</UserAppModal>
+                    <UserAppModal onClose={() => setIsOpenApp(false)} open={IsOpenApp} row={row} rowid={rowid}>Hello</UserAppModal>
                 </div>
 
                 <div className="row">
@@ -201,11 +217,10 @@ const UsersManagement = () => {
                 </div>
             </DashboardWrapperMain>
             <DashboardWrapperRight>
-
-                {/*<div className="title mb">Revenue by channel</div>
+                <div className="title mb">Overall</div>
                 <div className="mb">
-                    <RevenueList />
-                </div>*/}
+                    <OverallList />
+                </div>
             </DashboardWrapperRight>
         </DashboardWrapper>
     )

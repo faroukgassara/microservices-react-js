@@ -241,7 +241,7 @@ const SignIn = () => {
                         {
                             applications.map((data, index) => {
                                 return (
-                                    <a onClick={() => { setApplication(data); setIsOpen(true) }} href="#" className="social"><i className="fab fa-facebook-f"></i>{data.name}</a>
+                                    <a onClick={() => { setApplication(data); setIsOpen(true) }} href="#" className="social"><i className="fab fa-facebook-f"></i>{data.name.slice(0,3)}</a>
                                 )
                             })
                         }
@@ -332,7 +332,7 @@ const SignIn = () => {
                         {
                             applications.map((data, index) => {
                                 return (
-                                    <a onClick={() => { setApplication(data); setIsOpen(true) }} href="#" className="social"><i className="fab fa-facebook-f"></i>{data.name}</a>
+                                    <a onClick={() => { setApplication(data); setIsOpen(true) }} href="#" className="social"><i className="fab fa-facebook-f"></i>{data.name.slice(0,3)}</a>
                                 )
                             })
                         }

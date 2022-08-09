@@ -122,23 +122,26 @@ const Applications = () => {
     };
 
     function deleteRole(row) {
-        axios.delete(API_URL + 'roles/' + row._id, {
-            headers: {
-                "Authorization": `Bearer ${state.user.jwt.jwt}`
-            }
-        })
-            .then(response => {
-                swal({
-                    position: 'top-end',
-                    icon: 'success',
-                    title: 'Your work has been saved',
-                    showConfirmButton: false,
-                    timer: 2500
-                })
+        if (window.confirm('Do you want to delete this role?')) {
+            axios.delete(API_URL + 'roles/' + row._id, {
+                headers: {
+                    "Authorization": `Bearer ${state.user.jwt.jwt}`
+                }
             })
-            .catch(error => {
-                swal("Try Again!", "Error!", "error");
-            });
+                .then(response => {
+                    swal({
+                        position: 'top-end',
+                        icon: 'success',
+                        title: 'Your work has been saved',
+                        showConfirmButton: false,
+                        timer: 2500
+                    })
+                })
+                .catch(error => {
+                    swal("Try Again!", "Error!", "error");
+                });
+
+        }
     }
 
     const actionsrolesFormatter = (cell, row, rowIndex, formatExtraData) => {
@@ -169,6 +172,7 @@ const Applications = () => {
                 }
             })
                 .then(response => {
+                    setR("")
                     swal({
                         position: 'top-end',
                         icon: 'success',
@@ -204,7 +208,7 @@ const Applications = () => {
 
 
     function deleteApp(row) {
-        if (window.confirm('Do you want to add this role?')) {
+        if (window.confirm('Do you want to delete this app?')) {
             axios.delete(API_URL + 'applications/' + row._id, {
                 headers: {
                     "Authorization" : `Bearer ${state.user.jwt.jwt}`
@@ -377,7 +381,7 @@ const Applications = () => {
             <DashboardWrapperRight>
                 <div className="title mb">Roles</div>
 
-                <div className="mb area">
+                <div className="mb areaa">
                     <button style={adduserbtn} type="button" onClick={() => { setShow(!show) }} className="btn btn-danger">New Role +</button>
 
                     <input type="text" name="r" className="form-control" placeholder="Enter role"
@@ -399,10 +403,10 @@ const Applications = () => {
 
                     />
                 </div>
-                {/*<div className="title mb">Revenue by channel</div>
+                <div className="title mb">Overall</div>
                 <div className="mb">
-                    <RevenueList />
-                </div>*/}
+                    <OverallList />
+                </div>
             </DashboardWrapperRight>
         </DashboardWrapper>
     )
