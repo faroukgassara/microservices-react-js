@@ -195,8 +195,8 @@ const AddUserModal = ({ open, children, onClose }) => {
                             icon: 'success',
                             title: 'Your work has been saved',
                             showConfirmButton: false,
-                            timer: 2500
-                        })
+                            timer: 3000
+                        }).then(window.location.reload());
                     })
                     .catch(error => {
                         setLoading(false)
@@ -271,7 +271,7 @@ const AddUserModal = ({ open, children, onClose }) => {
                         </div>
 
                         <div className="form-group col-md-6">
-                            <input type="confirmpassword" name="confirmpassword" className="form-control" placeholder="Confirm password"
+                            <input type="password" name="confirmpassword" className="form-control" placeholder="Confirm password"
                                 value={confirmpassword}
                                 onChange={(e) => { setConfirmpassword(e.target.value); setTouchedconfirmpassword(true) }}
                             />

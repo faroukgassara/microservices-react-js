@@ -342,23 +342,6 @@ const Applications = () => {
                     <RoleModal onClose={() => setIsOpenRole(false)} open={IsOpenRole} row={row}>Hello</RoleModal>
                 </div>
 
-                <div hidden={true} className="row">
-
-                    <div className="col-8 col-md-12">
-                        <div className="row">
-                            {
-                                data.summary.map((item, index) => (
-                                    <div key={`summary-${index}`} className="col-6 col-md-6 col-sm-12 mb">
-                                        <SummaryBox item={item} />
-                                    </div>
-                                ))
-                            }
-                        </div>
-                    </div>
-                    <div className="col-4 hide-md">
-                        <SummaryBoxSpecial item={data.revenueSummary} />
-                    </div>
-                </div>
 
                 <div className="row">
                     <div className="col-12">

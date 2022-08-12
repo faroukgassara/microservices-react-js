@@ -18,13 +18,7 @@ const sidebarNav = [
         text: 'Applications'
     },
     {
-        link: '/customers',
-        section: 'customers',
-        icon: <i className='bx bx-user'></i>,
-        text: 'Customers'
-    },
-    {
-        link: '/settings',
+        link: '/',
         section: 'settings',
         icon: <i className='bx bx-cog'></i>,
         text: 'Settings'

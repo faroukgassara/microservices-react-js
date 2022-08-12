@@ -322,6 +322,7 @@ const Modal = ({ open, children, onClose, application }) => {
         <div className='modal' >
             <div className='modal-content' >
                 <button onClick={() => onClose()} type="button" style={{ backgroundColor: '#f44336', }}> Close </button>
+                <h1  hidden={pass}>  Sign in With Your Account :</h1>
                 <div style={deleteRoleBtnstyle} hidden={pass}>
 
                     <input type="password" name="password" placeholder="Password"
